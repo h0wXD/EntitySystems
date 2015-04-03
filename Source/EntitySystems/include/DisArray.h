@@ -5,6 +5,9 @@
 
 namespace es
 {
+	/**
+	 * Static sized array that gets allocated at runtime.
+	 */
 	template <class T>
 	class DisArray
 	{
@@ -12,6 +15,13 @@ namespace es
 		std::size_t _size;
 		std::size_t _endIndex;
 	public:
+
+		DisArray(std::size_t size) :
+			_size(size),
+			_endIndex(0)
+		{
+			_data = new T[size];
+		}
 
 		T *GetRaw()
 		{
@@ -25,56 +35,84 @@ namespace es
 
 		std::size_t GetEndIndex() const
 		{
-			return _size;
+			return _endIndex;
+		}
+
+		void PushBack(T &&t)
+		{
+			_data[_endIndex++] = t;
+		}
+
+		void PushBack(const T &t)
+		{
+			_data[_endIndex++] = t;
+		}
+
+		void SwapRemove(std::size_t index)
+		{
+			--_endIndex;
+			_data[index] = _data[_endIndex];
 		}
 
 		template <class Y>
 		class iterator_templ
 		{
 			T *_ptr;
-			iterator_templ(T *ptr) : _ptr(ptr) {}
 		public:
+			iterator_templ(T *ptr) : _ptr(ptr) {}
+
 			iterator_templ<Y> &operator++()
 			{
-				return _ptr++;
+				++_ptr;
+				return *this;
 			}
 
 			iterator_templ<Y> &operator--()
 			{
-				return _ptr--;
+				--_ptr;
+				return *this;
 			}
 
-			bool &operator==(const iterator_templ<Y> &rhs) const
+			T &operator*()
+			{
+				return *_ptr;
+			}
+
+			T *operator->()
+			{
+				return _ptr;
+			}
+
+			bool operator==(const iterator_templ<Y> &rhs) const
 			{
 				return this->_ptr == rhs._ptr;
 			}
 
-			bool &operator!=(const iterator_templ<Y> &rhs) const
+			bool operator!=(const iterator_templ<Y> &rhs) const
 			{
 				return this->_ptr != rhs._ptr;
 			}
 
-			bool &operator<(const iterator_templ<Y> &rhs) const
+			bool operator<(const iterator_templ<Y> &rhs) const
 			{
 				return this->_ptr < rhs._ptr;
 			}
 
-			bool &operator>(const iterator_templ<Y> &rhs) const
+			bool operator>(const iterator_templ<Y> &rhs) const
 			{
 				return this->_ptr > rhs._ptr;
 			}
 
-			bool &operator<=(const iterator_templ<Y> &rhs) const
+			bool operator<=(const iterator_templ<Y> &rhs) const
 			{
 				return this->_ptr <= rhs._ptr;
 			}
 
-			bool &operator>=(const iterator_templ<Y> &rhs) const
+			bool operator>=(const iterator_templ<Y> &rhs) const
 			{
 				return this->_ptr >= rhs._ptr;
 			}
 
-			friend class DisArray;
 		};
 
 		typedef iterator_templ<T> iterator;
@@ -87,6 +125,16 @@ namespace es
 		iterator end() const
 		{
 			return iterator(_data + _endIndex);
+		}
+
+		T &operator[](std::size_t index)
+		{
+			return _data[index];
+		}
+
+		~DisArray()
+		{
+			delete[] _data;
 		}
 	};
 }
