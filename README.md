@@ -1,15 +1,16 @@
-Experimental Entity System/Entity Component system in C++.
+## Experimental Entity System
 
-Goals:
+Written in C++.
 
-• Easy to parallelize.
+### Description
 
-• No memory fragmentation.
+This repository is meant to be a playground to experiment and try to create a proper highly performant and yet easy to use entity system.
 
-• Handle large amounts of data quickly
+### Goals
 
-• Easy to use
+* High performance
+* Versatility
+* Easily parallelizable
+* Easy to read
+* Easy to write
 
-• Easy to extend
-
-• High performance
