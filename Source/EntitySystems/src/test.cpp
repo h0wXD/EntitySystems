@@ -30,7 +30,7 @@ int main(int argc, char *argv[])
 
 	System::Handle handle = system->Add(5, 8, 12);
 	TestInstance test = system->GetInstance(handle);
-
+	
 	std::cout << test.Test() << std::endl;
 	--test.Test();
 	std::cout << test.Test() << std::endl;

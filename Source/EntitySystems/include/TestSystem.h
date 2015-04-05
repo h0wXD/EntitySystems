@@ -7,13 +7,11 @@
 
 namespace es
 {
-	//class TestSystem;
 	class TestInstance
 	{
 		friend class TestSystem;
 		TestSystem *_system;
 		System::Handle _handle;
-		// std::int_16t _systemGeneration;
 
 		TestInstance(TestSystem * system, const System::Handle &handle) :
 			_system(system),
@@ -37,7 +35,7 @@ namespace es
 		}
 	public:
 
-		TestSystem() : _testArray(50), _testArray2(50), _testArray3(50)
+		TestSystem() : _testArray(50), _testArray2(50), _testArray3(50), System(50)
 		{ 
 			for (unsigned i = 0; i < _testArray.GetSize(); i++)
 			{
@@ -47,16 +45,22 @@ namespace es
 			}
 		}
 
-		Handle Add(int i, float f, short s)
+		Reference Add(int i, float f, short s)
 		{
-			Handle handle;
-			SetHandle(handle, _testArray.GetEndIndex());
+			Handle handle = CreateHandle(_testArray.GetEndIndex());
+			Reference reference = System::Add(handle);
 			_testArray.PushBack(i);
 			_testArray2.PushBack(f);
 			_testArray3.PushBack(s);
-			return handle;
+			return reference;
 		}
 		
+		void Remove(Reference reference)
+		{
+			System::Remove(reference);
+
+		}
+
 		TestInstance GetInstance(Handle h)
 		{
 			return TestInstance(this, h);

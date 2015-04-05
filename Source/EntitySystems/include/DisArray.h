@@ -23,6 +23,16 @@ namespace es
 			_data = new T[size];
 		}
 
+		DisArray() : _data(nullptr), _size(0), _endIndex(0) { }
+
+		void Allocate(std::size_t size)
+		{
+			delete[] _data;
+			_data = new T[size];
+			_size = size;
+			_endIndex = 0;
+		}
+
 		T *GetRaw()
 		{
 			return _data;
