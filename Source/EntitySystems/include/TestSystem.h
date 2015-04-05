@@ -7,32 +7,87 @@
 
 namespace es
 {
+	//class TestSystem;
+	class TestInstance
+	{
+		friend class TestSystem;
+		TestSystem *_system;
+		System::Handle _handle;
+		// std::int_16t _systemGeneration;
+
+		TestInstance(TestSystem * system, const System::Handle &handle) :
+			_system(system),
+			_handle(handle) { }
+	public:
+		int &Test();
+		float &Test2();
+		short &Test3();
+	};
+
 	class TestSystem : public System
 	{
-		DisArray<int> testArray;
-		DisArray<float> testArray2;
-		DisArray<short> testArray3;
+		friend class TestInstance;
+		DisArray<int> _testArray;
+		DisArray<float> _testArray2;
+		DisArray<short> _testArray3;
+
+		void Remove(Handle handle)
+		{
+			System::Remove(handle.GetId(), _testArray, _testArray2, _testArray3);
+		}
 	public:
-		TestSystem() : testArray(50), testArray2(50), testArray3(50)
+
+		TestSystem() : _testArray(50), _testArray2(50), _testArray3(50)
 		{ 
-			for (decltype(testArray.GetSize()) i = 0; i < testArray.GetSize(); i++)
+			for (unsigned i = 0; i < _testArray.GetSize(); i++)
 			{
-				testArray.PushBack(int(i));
-				testArray2.PushBack(i * 0.5f);
-				testArray3.PushBack(i * 2);
+				_testArray.PushBack(int(i));
+				_testArray2.PushBack(i * 0.5f);
+				_testArray3.PushBack(i * 2);
 			}
+		}
+
+		Handle Add(int i, float f, short s)
+		{
+			Handle handle;
+			SetHandle(handle, _testArray.GetEndIndex());
+			_testArray.PushBack(i);
+			_testArray2.PushBack(f);
+			_testArray3.PushBack(s);
+			return handle;
 		}
 		
-		void Process() override
+		TestInstance GetInstance(Handle h)
 		{
-			if (testArray.GetEndIndex() > 0)
+			return TestInstance(this, h);
+		}
+
+		void Process()
+		{
+			if (_testArray.GetEndIndex() > 0)
 			{
-				System::Remove(0, testArray, testArray2, testArray3);
+				Remove(System::CreateHandle(0));
 			}
-			TestPrintManager<int>::Process(testArray);
-			TestPrintManager<float>::Process(testArray2);
+			TestPrintManager<int>::Process(_testArray);
+			TestPrintManager<float>::Process(_testArray2);
 		}
 	};
+
+	int &TestInstance::Test()
+	{
+		return _system->_testArray[_handle.GetId()];
+	}
+
+	float &TestInstance::Test2()
+	{
+		return _system->_testArray2[_handle.GetId()];
+	}
+
+	short &TestInstance::Test3()
+	{
+		return _system->_testArray3[_handle.GetId()];
+	}
+
 }
 
 #endif

@@ -2,6 +2,7 @@
 #define ES_SYSTEM_H
 
 #include <cstddef>
+#include <cstdint>
 
 namespace es
 {
@@ -22,8 +23,34 @@ namespace es
 		}
 
 	public:
-		virtual void Process() = 0;
 		virtual ~System() = 0;
+
+		class Handle
+		{
+			friend class System;
+			std::uint16_t _id;
+			// std::int16_t gen;
+			Handle(std::uint16_t id) : _id(id) { }
+		public:
+			Handle() { }
+			std::uint16_t GetId()
+			{
+				return _id;
+			}
+		};
+
+		class Reference : public Handle { };
+
+	protected:
+		static void SetHandle(Handle &h, uint16_t id)
+		{
+			h._id = id;
+		}
+		
+		static Handle CreateHandle(uint16_t id)
+		{
+			return Handle(id);
+		}
 	};
 }
 
