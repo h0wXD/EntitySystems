@@ -30,6 +30,11 @@ namespace es
 		DisArray<int> _testArray;
 		DisArray<float> _testArray2;
 		DisArray<short> _testArray3;
+
+		void Remove(Handle handle)
+		{
+			System::Remove(handle.GetId(), _testArray, _testArray2, _testArray3);
+		}
 	public:
 
 		TestSystem() : _testArray(50), _testArray2(50), _testArray3(50)
@@ -57,11 +62,11 @@ namespace es
 			return TestInstance(this, h);
 		}
 
-		void Process() override
+		void Process()
 		{
 			if (_testArray.GetEndIndex() > 0)
 			{
-				System::Remove(0, _testArray, _testArray2, _testArray3);
+				Remove(System::CreateHandle(0));
 			}
 			TestPrintManager<int>::Process(_testArray);
 			TestPrintManager<float>::Process(_testArray2);

@@ -9,7 +9,7 @@ namespace es
 	 * Static sized array that gets allocated at runtime.
 	 */
 	template <class T>
-	class DisArray
+	class DisArray final
 	{
 		T *_data;
 		std::size_t _size;
