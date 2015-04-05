@@ -68,6 +68,9 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\DisArray.h" />
+    <ClInclude Include="include\System.h" />
+    <ClInclude Include="include\TestPrintManager.h" />
+    <ClInclude Include="include\TestSystem.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\test.cpp" />
