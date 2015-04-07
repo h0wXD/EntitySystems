@@ -1,9 +1,9 @@
 #ifndef ES_TEST_SYSTEM_H
 #define ES_TEST_SYSTEM_H
 
-#include <System.h>
-#include <DisArray.h>
-#include <TestPrintManager.h>
+#include <ES/System.h>
+#include <ES/DisArray.h>
+#include <ES/TestPrintManager.h>
 
 namespace es
 {

@@ -1,7 +1,7 @@
 #ifndef ES_SYSTEM_H
 #define ES_SYSTEM_H
 
-#include <DisArray.h>
+#include <ES/DisArray.h>
 
 #include <cstddef>
 #include <cstdint>

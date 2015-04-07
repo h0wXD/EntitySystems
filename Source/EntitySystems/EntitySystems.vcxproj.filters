@@ -15,16 +15,16 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\DisArray.h">
+    <ClInclude Include="include\ES\System.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\System.h">
+    <ClInclude Include="include\ES\TestPrintManager.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\TestSystem.h">
+    <ClInclude Include="include\ES\TestSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\TestPrintManager.h">
+    <ClInclude Include="include\ES\DisArray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

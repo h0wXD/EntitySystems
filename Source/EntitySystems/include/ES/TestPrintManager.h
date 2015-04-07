@@ -1,7 +1,7 @@
 #ifndef ES_TEST_PRINT_MANAGER_H
 #define ES_TEST_PRINT_MANAGER_H
 
-#include <DisArray.h>
+#include <ES/DisArray.h>
 #include <iostream>
 
 namespace es
