@@ -72,7 +72,7 @@ namespace es
 			return Handle(id);
 		}
 
-		Handle CreateHandle()
+		Handle CreateHandle() const
 		{
 			return Handle(_elementCount);
 		}
@@ -80,6 +80,11 @@ namespace es
 		static std::uint16_t GetReferenceId(const Reference &ref)
 		{
 			return ref._id;
+		}
+
+		static std::uint16_t GetHandleId(const Handle &handle)
+		{
+			return handle._id;
 		}
 
 		Reference Add(Handle handle)
@@ -99,7 +104,6 @@ namespace es
 			auto it = std::find(_referenceArray.begin(), _referenceArray.end(), _elementCount);
 			*it = _referenceArray[ref._id];
 			_referenceArray[ref._id] = UINT16_MAX;
-			
 		}
 
 	public:
@@ -109,6 +113,15 @@ namespace es
 			return CreateHandle(_referenceArray[ref._id]);
 		}
 
+		Reference GetReference(const Handle h)
+		{
+			auto it = std::find_if(_referenceArray.begin(), _referenceArray.begin() + _elementCount, [&h](const std::uint16_t r)
+			{
+				return r == GetHandleId(h);
+			});
+
+			return Reference(it - _referenceArray.begin());
+		}
 	};
 }
 

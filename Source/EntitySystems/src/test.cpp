@@ -25,6 +25,10 @@ int main(int argc, char *argv[])
 
 	instance = system->GetInstance(firstItem);
 	std::cout << instance.Test() << " " << instance.Test2() << " " << instance.Test3() << std::endl;
+	
+	System::Handle handle = system->GetHandle(reference);
+	reference = system->GetReference(handle);
+	std::cout << instance.Test() << " " << instance.Test2() << " " << instance.Test3() << std::endl;
 
 	std::cin.peek();
 	return 0;
