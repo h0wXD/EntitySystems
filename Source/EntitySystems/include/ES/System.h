@@ -84,10 +84,9 @@ namespace es
 
 		Reference Add(Handle handle)
 		{
-			
-			auto ref = std::find_if(_referenceArray.begin(), _referenceArray.end(), [&](const Reference &ref)
+			auto ref = std::find_if(_referenceArray.begin(), _referenceArray.end(), [&](const std::uint16_t r)
 			{ 
-				return GetReferenceId(ref) == UINT16_MAX;
+				return r == UINT16_MAX;
 			});
 			*ref = _elementCount;
 			++_elementCount;
@@ -109,6 +108,7 @@ namespace es
 		{
 			return CreateHandle(_referenceArray[ref._id]);
 		}
+
 	};
 }
 

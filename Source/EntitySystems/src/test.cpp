@@ -11,7 +11,7 @@ int main(int argc, char *argv[])
 	using es::TestInstance;
 	
 	std::unique_ptr<TestSystem> system(new TestSystem());
-	system->Add(0, 1, 2);
+	System::Reference firstItem = system->Add(0, 1, 2);
 	System::Reference toRemove = system->Add(1, 2, 3);
 	System::Reference reference = system->Add(2, 3, 4);
 
@@ -21,6 +21,9 @@ int main(int argc, char *argv[])
 	system->Remove(toRemove);
 
 	instance = system->GetInstance(system->GetHandle(reference));
+	std::cout << instance.Test() << " " << instance.Test2() << " " << instance.Test3() << std::endl;
+
+	instance = system->GetInstance(firstItem);
 	std::cout << instance.Test() << " " << instance.Test2() << " " << instance.Test3() << std::endl;
 
 	std::cin.peek();
