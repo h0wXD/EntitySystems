@@ -13,6 +13,8 @@ This repository is meant to be a playground to experiment and try to create a pr
 * Easily parallelizable
 * Easy to read
 * Easy to write
+* Avoid low-level memory access and management
+* Fully C++11 compliant
 
 ### Description
 
