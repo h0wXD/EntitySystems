@@ -26,4 +26,6 @@ When a component has to be referenced by a system that does not own the componen
 
 This will most likely end up as a tiny library of helper methods and classes as the optimal solution isn't the most general one.
 
-At the moment a System only supports up to 65,535 entities due to implementation details, this might change.
+At the moment a System only supports up to 32,566 entities due to implementation details. In the future different kinds will be added for huge datasets.
+
+This project makes heavy use of templates, compilation time will probably not be great.
