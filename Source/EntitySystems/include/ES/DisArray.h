@@ -11,8 +11,9 @@ namespace es
 	 * Static sized array that gets allocated at runtime.
 	 */
 	template <class T>
-	class DisArray
+	class DisArray final
 	{
+		static const std::uint16_t _bitmask = 0x7FFFu;
 		T *_data;
 		std::uint16_t _size;
 	public:
@@ -39,12 +40,18 @@ namespace es
 
 		std::size_t GetSize() const
 		{
-			return _size;
+			return _size & _bitmask;
 		}
 
 		void Move(std::uint16_t destination, std::uint16_t source)
 		{
 			_data[destination] = _data[source];
+		}
+
+		void Slice(DisArray<T> *out, const DisArray<T> &in, std::uint16_t start, std::uint16_t size)
+		{
+			out->_data = in._data + start;
+			out->_size = size | ~_bitmask;
 		}
 
 		template <class Y>
@@ -156,7 +163,7 @@ namespace es
 
 		iterator_templ<T> end() const
 		{
-			return iterator_templ<T>(_data + _size);
+			return iterator_templ<T>(_data + GetSize());
 		}
 
 		T &operator[](std::uint16_t index)
@@ -166,7 +173,10 @@ namespace es
 
 		~DisArray()
 		{
-			delete[] _data;
+			if (!(_size >> 15))
+			{
+				delete[] _data;
+			}
 		}
 	};
 }

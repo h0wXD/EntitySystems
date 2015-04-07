@@ -30,6 +30,19 @@ int main(int argc, char *argv[])
 	reference = system->GetReference(handle);
 	std::cout << instance.Test() << " " << instance.Test2() << " " << instance.Test3() << std::endl;
 
+	DisArray<int> array(20);
+	{
+		int i = 0;
+		std::generate(array.begin(), array.end(), [&i]()
+		{
+			return i++;
+		});
+	}
+
+	DisArray<int> slice;
+	array.Slice(&slice, array, 5, 5);
+	es::TestPrintManager<int>::Process(slice, slice.GetSize());
+	
 	std::cin.peek();
 	return 0;
 }
