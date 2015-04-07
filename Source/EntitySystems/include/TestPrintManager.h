@@ -3,7 +3,6 @@
 
 #include <DisArray.h>
 #include <iostream>
-#include <type_traits>
 
 namespace es
 {
@@ -11,11 +10,11 @@ namespace es
 	class TestPrintManager
 	{
 	public:
-		static void Process(const DisArray<T> &array)
+		static void Process(const DisArray<T> &arr, const std::uint16_t elementCount)
 		{
-			for (auto elem : array)
+			for (auto elem = arr.begin(); elem < arr.end(); ++elem)
 			{
-				std::cout << elem << std::endl;
+				std::cout << *elem << std::endl;
 			}
 		}
 	};

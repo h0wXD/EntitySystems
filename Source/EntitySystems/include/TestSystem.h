@@ -31,34 +31,35 @@ namespace es
 
 		void Remove(Handle handle)
 		{
-			System::Remove(handle.GetId(), _testArray, _testArray2, _testArray3);
+			System::Remove(handle.GetId(), _elementCount - 1, _testArray, _testArray2, _testArray3);
 		}
 	public:
 
 		TestSystem() : _testArray(50), _testArray2(50), _testArray3(50), System(50)
 		{ 
-			for (unsigned i = 0; i < _testArray.GetSize(); i++)
-			{
-				_testArray.PushBack(int(i));
-				_testArray2.PushBack(i * 0.5f);
-				_testArray3.PushBack(i * 2);
-			}
+			int i = 0;
+			float f = 0;
+			short s = 0;
+			std::generate(_testArray.begin(), _testArray.end(), [&i]() { return i++; });
+			std::generate(_testArray2.begin(), _testArray2.end(), [&f]() { return f += 0.5f; });
+			std::generate(_testArray3.begin(), _testArray3.end(), [&s]() { return s += 2; });
 		}
 
 		Reference Add(int i, float f, short s)
 		{
-			Handle handle = CreateHandle(_testArray.GetEndIndex());
-			Reference reference = System::Add(handle);
-			_testArray.PushBack(i);
-			_testArray2.PushBack(f);
-			_testArray3.PushBack(s);
-			return reference;
+			Handle handle = CreateHandle();
+			Reference ref = System::Add(handle);
+			auto index = handle.GetId();
+			_testArray[index] = i;
+			_testArray2[index] = f;
+			_testArray3[index] = s;
+			return ref;
 		}
 		
-		void Remove(Reference reference)
+		void Remove(Reference ref)
 		{
-			System::Remove(reference);
-
+			Remove(GetHandle(ref));
+			System::Remove(ref);
 		}
 
 		TestInstance GetInstance(Handle h)
@@ -66,14 +67,19 @@ namespace es
 			return TestInstance(this, h);
 		}
 
+		TestInstance GetInstance(Reference r)
+		{
+			return GetInstance(GetHandle(r));
+		}
+
 		void Process()
 		{
-			if (_testArray.GetEndIndex() > 0)
+			if (_elementCount > 0)
 			{
 				Remove(System::CreateHandle(0));
 			}
-			TestPrintManager<int>::Process(_testArray);
-			TestPrintManager<float>::Process(_testArray2);
+			TestPrintManager<int>::Process(_testArray, _elementCount);
+			TestPrintManager<float>::Process(_testArray2, _elementCount);
 		}
 	};
 

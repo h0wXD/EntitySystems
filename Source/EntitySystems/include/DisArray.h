@@ -2,6 +2,8 @@
 #define ES_DISARRAY_H
 
 #include <cstddef>
+#include <cstdint>
+#include <iterator>
 
 namespace es
 {
@@ -9,28 +11,25 @@ namespace es
 	 * Static sized array that gets allocated at runtime.
 	 */
 	template <class T>
-	class DisArray final
+	class DisArray
 	{
 		T *_data;
-		std::size_t _size;
-		std::size_t _endIndex;
+		std::uint16_t _size;
 	public:
 
-		DisArray(std::size_t size) :
-			_size(size),
-			_endIndex(0)
+		DisArray(std::uint16_t size) :
+			_size(size)
 		{
 			_data = new T[size];
 		}
 
-		DisArray() : _data(nullptr), _size(0), _endIndex(0) { }
+		DisArray() : _data(nullptr), _size(0) { }
 
-		void Allocate(std::size_t size)
+		void Allocate(std::uint16_t size)
 		{
 			delete[] _data;
 			_data = new T[size];
 			_size = size;
-			_endIndex = 0;
 		}
 
 		T *GetRaw()
@@ -43,33 +42,17 @@ namespace es
 			return _size;
 		}
 
-		std::size_t GetEndIndex() const
+		void Move(std::uint16_t destination, std::uint16_t source)
 		{
-			return _endIndex;
-		}
-
-		void PushBack(T &&t)
-		{
-			_data[_endIndex++] = t;
-		}
-
-		void PushBack(const T &t)
-		{
-			_data[_endIndex++] = t;
-		}
-
-		void SwapRemove(std::size_t index)
-		{
-			--_endIndex;
-			_data[index] = _data[_endIndex];
+			_data[destination] = _data[source];
 		}
 
 		template <class Y>
-		class iterator_templ
+		class iterator_templ : public std::iterator<std::random_access_iterator_tag, Y, std::uint16_t>
 		{
-			T *_ptr;
+			Y *_ptr;
 		public:
-			iterator_templ(T *ptr) : _ptr(ptr) {}
+			iterator_templ(Y *ptr) : _ptr(ptr) {}
 
 			iterator_templ<Y> &operator++()
 			{
@@ -83,12 +66,50 @@ namespace es
 				return *this;
 			}
 
-			T &operator*()
+			iterator_templ<Y> operator+ (const std::uint16_t offset) const
+			{
+				return iterator_templ<Y>(this->_ptr + offset);
+			}
+
+			iterator_templ<Y> operator- (const std::uint16_t offset) const
+			{
+				return iterator_templ<Y>(this->_ptr - offset);
+			}
+
+			iterator_templ<Y> operator+=(const std::uint16_t offset)
+			{
+				_ptr += offset;
+				return *this;
+			}
+			iterator_templ<Y> operator-=(const std::uint16_t offset)
+			{
+				_ptr -= offset;
+				return *this;
+			}
+
+			std::uint16_t operator- (const iterator_templ<Y> &rhs) const
+			{
+				return (std::uintptr_t(_ptr) - std::uintptr_t(rhs._ptr)) / 2;
+			}
+
+			iterator_templ<Y> &operator+=(const iterator_templ<Y> &rhs)
+			{
+				_ptr += std::uintptr_t(rhs._ptr);
+				return *this;
+			}
+
+			iterator_templ<Y> &operator-=(const iterator_templ<Y> &rhs)
+			{
+				_ptr -= std::uintptr_t(rhs._ptr);
+				return *this;
+			}
+
+			Y &operator*()
 			{
 				return *_ptr;
 			}
 
-			T *operator->()
+			Y *operator->()
 			{
 				return _ptr;
 			}
@@ -126,18 +147,19 @@ namespace es
 		};
 
 		typedef iterator_templ<T> iterator;
+		typedef const iterator_templ<T> const_iterator;
 
-		iterator begin() const
+		iterator_templ<T> begin() const
 		{
-			return iterator(_data);
+			return iterator_templ<T>(_data);
 		}
 
-		iterator end() const
+		iterator_templ<T> end() const
 		{
-			return iterator(_data + _endIndex);
+			return iterator_templ<T>(_data + _size);
 		}
 
-		T &operator[](std::size_t index)
+		T &operator[](std::uint16_t index)
 		{
 			return _data[index];
 		}
