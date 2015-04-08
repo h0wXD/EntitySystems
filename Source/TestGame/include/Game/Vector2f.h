@@ -56,7 +56,7 @@ namespace game
 		return lhs;
 	}
 
-	Vector2f operator+ (const Vector2f &lhs, const Vector2f &rhs)
+	Vector2f operator+ (const Vector2f &lhs, const Vector2f rhs)
 	{
 		auto v(lhs);
 		v += rhs;

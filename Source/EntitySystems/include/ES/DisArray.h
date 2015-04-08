@@ -48,7 +48,7 @@ namespace es
 			_data[destination] = _data[source];
 		}
 
-		void Slice(DisArray<T> *out, const DisArray<T> &in, std::uint16_t start, std::uint16_t size)
+		static void Slice(DisArray<T> *out, const DisArray<T> &in, std::uint16_t start, std::uint16_t size)
 		{
 			out->_data = in._data + start;
 			out->_size = size | ~_bitmask;

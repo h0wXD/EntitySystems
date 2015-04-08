@@ -8,6 +8,7 @@ namespace game
 	class UpdatableSystem : public es::System
 	{
 	public:
+		UpdatableSystem(std::uint16_t size) : es::System(size) { }
 		virtual void Tick(float deltaTime) = 0;
 
 	};

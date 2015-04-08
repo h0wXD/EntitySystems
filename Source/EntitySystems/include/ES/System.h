@@ -109,6 +109,12 @@ namespace es
 
 	public:
 
+		Reference Add()
+		{
+			Handle handle = CreateHandle(_elementCount);
+			return Add(handle);
+		}
+
 		Handle GetHandle(Reference ref)
 		{
 			return CreateHandle(_referenceArray[ref._id]);
