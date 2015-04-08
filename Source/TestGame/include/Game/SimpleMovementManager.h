@@ -5,6 +5,7 @@
 #include <Game/Vector2f.h>
 #include <algorithm>
 #include <iostream>
+#include <ES/transform_self.h>
 
 namespace game
 {
@@ -13,17 +14,11 @@ namespace game
 	public:
 		static void Process(es::DisArray<Vector2f> *position, es::DisArray<Vector2f> *direction, std::int16_t count, float deltaTime)
 		{
-			/*std::transform(position.begin(), position.begin() + count, direction.begin(), position.begin(), [&deltaTime](const Vector2f &v1, const Vector2f &v2)
+			es::transform_self(*position, *direction, [deltaTime](Vector2f &pos, Vector2f &dir)
 			{
-				return v1 + v2 * deltaTime;
-			});*/
-			Vector2f *v1 = position->GetRaw();
-			Vector2f *v2 = direction->GetRaw();
-			for (std::uint16_t i = 0; i < count; ++i, ++v1, ++v2)
-			{
-				v1->x += v2->x * deltaTime;
-				v1->y += v2->y * deltaTime;
-			}
+				pos.x += dir.x * deltaTime;
+				pos.y += dir.y * deltaTime;
+			});
 		}
 	};
 }

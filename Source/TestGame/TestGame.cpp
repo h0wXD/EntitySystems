@@ -18,7 +18,8 @@ public:
 	float health;
 	void Update(float deltaTime) override
 	{
-		position += direction;
+		position.x += direction.x;
+		position.y += direction.y;
 		health -= deltaTime;
 	}
 };

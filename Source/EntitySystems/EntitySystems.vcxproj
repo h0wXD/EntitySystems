@@ -134,6 +134,7 @@
     <ClInclude Include="include\ES\System.h" />
     <ClInclude Include="include\ES\TestPrintManager.h" />
     <ClInclude Include="include\ES\TestSystem.h" />
+    <ClInclude Include="include\ES\transform_self.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\System.cpp" />
