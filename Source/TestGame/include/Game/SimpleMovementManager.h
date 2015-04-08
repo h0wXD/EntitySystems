@@ -14,10 +14,11 @@ namespace game
 	public:
 		static void Process(es::DisArray<Vector2f> *position, es::DisArray<Vector2f> *direction, std::int16_t count, float deltaTime)
 		{
-			es::transform_self(*position, *direction, [deltaTime](Vector2f &pos, Vector2f &dir)
+			es::transform_self_n(position->begin(), direction->begin(), count, [deltaTime](Vector2f &pos, Vector2f &dir)
 			{
 				pos.x += dir.x * deltaTime;
 				pos.y += dir.y * deltaTime;
+				//pos += dir * deltaTime;
 			});
 		}
 	};

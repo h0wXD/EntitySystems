@@ -23,10 +23,6 @@ public:
 		health -= deltaTime;
 	}
 };
-void RunNaiveOO(Enemy **enemies, std::size_t count)
-{
-	
-}
 
 int main(int argc, char *argv[])
 {

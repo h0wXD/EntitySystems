@@ -26,7 +26,7 @@ namespace es
 	template <class Target, class Input, class Operation>
 	void transform_self_n(Target target, Input input, std::size_t n, Operation operation)
 	{
-		transform_self(target, target + n, std::begin(input), operation);
+		transform_self(target, target + n, input, operation);
 	}
 }
 #endif

@@ -49,50 +49,64 @@ namespace game
 		}
 	};
 
-	Vector2f &operator+=(Vector2f &lhs, const Vector2f &rhs)
+	inline Vector2f &operator+=(Vector2f &lhs, const Vector2f &rhs)
 	{
 		lhs.x += rhs.x;
 		lhs.y += rhs.y;
 		return lhs;
 	}
 
-	Vector2f operator+ (const Vector2f &lhs, const Vector2f rhs)
+	inline Vector2f operator+ (const Vector2f &lhs, const Vector2f rhs)
 	{
 		auto v(lhs);
 		v += rhs;
 		return v;
 	}
 
-	Vector2f operator-=(Vector2f &lhs, const Vector2f &rhs)
+	inline Vector2f operator-=(Vector2f &lhs, const Vector2f &rhs)
 	{
 		lhs.x -= rhs.x;
 		lhs.y -= rhs.y;
 		return lhs;
 	}
 
-	Vector2f operator- (const Vector2f &lhs, const Vector2f &rhs)
+	inline Vector2f operator- (const Vector2f &lhs, const Vector2f &rhs)
 	{
 		auto v(lhs);
 		v -= rhs;
 		return v;
 	}
 
-	Vector2f &operator*=(Vector2f &v, float scalar)
+	inline Vector2f &operator*=(Vector2f &v, float scalar)
 	{
 		v.x *= scalar;
 		v.y *= scalar;
 		return v;
 	}
 
-	Vector2f &operator*(const Vector2f &v, float scalar)
+	inline Vector2f operator*(const Vector2f &v, float scalar)
 	{
 		auto v2(v);
 		return v2 *= scalar;
 	}
 
-	Vector2f &operator*(float scalar, const Vector2f &v)
+	inline Vector2f operator*(float scalar, const Vector2f &v)
 	{
 		return v * scalar;
+	}
+
+	inline Vector2f &operator+=(Vector2f &lhs, Vector2f &&rhs)
+	{
+		lhs.x += rhs.x;
+		lhs.y += rhs.y;
+		return lhs;
+	}
+
+	inline Vector2f &operator-=(Vector2f &lhs, Vector2f &&rhs)
+	{
+		lhs.x -= rhs.x;
+		lhs.y -= rhs.y;
+		return lhs;
 	}
 
 	

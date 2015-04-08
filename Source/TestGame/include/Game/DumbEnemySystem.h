@@ -53,7 +53,10 @@ namespace game
 			vectorArr::Slice(&d1, _direction, size * 0, size);
 			vectorArr::Slice(&d2, _direction, size * 1, size);
 			vectorArr::Slice(&d3, _direction, size * 2, size);
-
+			
+			std::thread t2(SimpleMovementManager::Process, &p1, &d1, size, deltaTime);
+			std::thread t3(SimpleMovementManager::Process, &p2, &d2, size, deltaTime);
+			std::thread t4(SimpleMovementManager::Process, &p3, &d3, size, deltaTime);
 			std::thread t1([](healthArr *health, std::uint16_t count, float deltaTime)
 			{
 				float *healthIt = health->GetRaw();
@@ -62,14 +65,11 @@ namespace game
 					*healthIt -= deltaTime;
 				}
 			}, &_health, _elementCount, deltaTime);
-			
-			std::thread t2(SimpleMovementManager::Process, &p1, &d1, size, deltaTime);
-			std::thread t3(SimpleMovementManager::Process, &p2, &d2, size, deltaTime);
-			std::thread t4(SimpleMovementManager::Process, &p3, &d3, size, deltaTime);
-			t1.join();
+
 			t2.join();
 			t3.join();
 			t4.join();
+			t1.join();
 #undef USE_THREADS
 #else
 			SimpleMovementManager::Process(&_position, &_direction, _elementCount, deltaTime);
