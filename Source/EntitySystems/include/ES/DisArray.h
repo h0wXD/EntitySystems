@@ -1,3 +1,33 @@
+﻿/********************************************************************************
+ *                                                                              *
+ *  ╔═════════════╗                                                             *
+ *  ║EntitySystems║                                                             *
+ *  ╚═════════════╝                                                             *
+ *━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━*
+                                                                                
+   Copyright (c) 2015 h0wXD & LorenzJ.                                          
+   https://github.com/h0wXD                                                     
+   https://github.com/LorenzJ                                                   
+                                                                                
+   Permission is hereby granted, free of charge, to any person obtaining a copy 
+   of this software and associated documentation files (the "Software"), to deal
+   in the Software without restriction, including without limitation the rights 
+   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell    
+   copies of the Software, and to permit persons to whom the Software is        
+   furnished to do so, subject to the following conditions:                     
+                                                                                
+   The above copyright notice and this permission notice shall be included in   
+   all copies or substantial portions of the Software.                          
+                                                                                
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR   
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,     
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE  
+   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER       
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN    
+   THE SOFTWARE.                                                                
+ ********************************************************************************/
+
 #ifndef ES_DISARRAY_H
 #define ES_DISARRAY_H
 
@@ -8,24 +38,38 @@
 namespace es
 {
 	/**
-	 * Static sized array that gets allocated at runtime.
+	 * @brief Static sized array that gets allocated at runtime.
+	 *
+	 * A small static sized array that gets allocated at runtime
+	 * Supports up to 32767 items
+	 * Can be reallocated at runtime but will not remember its previous data
+	 * Does not keep track of how many member it stores nor does it do any
+	 * range checking.
 	 */
 	template <class T>
-	class DisArray final
+	class disarray final
 	{
-		static const std::uint16_t _bitmask = 0x7FFFu;
+		// Bitmask for _size
+		// Most significant bit of _size indicates whether or not it's an array slice
+		static const std::uint16_t BITMASK = 0x7FFFu;
 		T *_data;
 		std::uint16_t _size;
 	public:
 
-		DisArray(std::uint16_t size) :
+		disarray(std::uint16_t size) :
 			_size(size)
 		{
 			_data = new T[size];
 		}
 
-		DisArray() : _data(nullptr), _size(0) { }
+		disarray() : _data(nullptr), _size(0) { }
 
+		/**
+		 * @brief Allocates a disarray at runtime
+		 *
+		 * Allocates a disarray at runtime
+		 * Old data will get freed if any
+		 */
 		void Allocate(std::uint16_t size)
 		{
 			delete[] _data;
@@ -38,20 +82,37 @@ namespace es
 			return _data;
 		}
 
-		std::size_t GetSize() const
+		std::uint16_t size() const
 		{
-			return _size & _bitmask;
+			return _size & BITMASK;
 		}
 
-		void Move(std::uint16_t destination, std::uint16_t source)
+		T *data()
 		{
-			_data[destination] = _data[source];
+			return _data;
 		}
 
-		static void Slice(DisArray<T> *out, const DisArray<T> &in, std::uint16_t start, std::uint16_t size)
+		const T *data() const
+		{
+			return _data;
+		}
+
+		std::uint16_t GetSize() const
+		{
+			return _size & BITMASK;
+		}
+
+		/**
+		 * @brief Outputs a disarray slice
+		 * @param[out] out   The disarray to output the slice to
+		 * @param[in]  in    The disarray to take the slice from
+		 * @param[in]  start Start index of the slice
+		 * @param[in]  size  Number of elements in the slice
+		 */
+		static void Slice(disarray<T> *out, const disarray<T> &in, std::uint16_t start, std::uint16_t size)
 		{
 			out->_data = in._data + start;
-			out->_size = size | ~_bitmask;
+			out->_size = size | ~BITMASK;
 		}
 
 		template <class Y>
@@ -73,6 +134,20 @@ namespace es
 				return *this;
 			}
 
+			iterator_templ<Y> operator++(int)
+			{
+				iterator_templ<Y> copy(*this);
+				++_ptr;
+				return copy;
+			}
+
+			iterator_templ<Y> operator--(int)
+			{
+				iterator_templ<Y> copy(*this);
+				--_ptr;
+				return copy;
+			}
+
 			iterator_templ<Y> operator+ (const std::uint16_t offset) const
 			{
 				return iterator_templ<Y>(this->_ptr + offset);
@@ -83,12 +158,12 @@ namespace es
 				return iterator_templ<Y>(this->_ptr - offset);
 			}
 
-			iterator_templ<Y> operator+=(const std::uint16_t offset)
+			iterator_templ<Y> &operator+=(const std::uint16_t offset)
 			{
 				_ptr += offset;
 				return *this;
 			}
-			iterator_templ<Y> operator-=(const std::uint16_t offset)
+			iterator_templ<Y> &operator-=(const std::uint16_t offset)
 			{
 				_ptr -= offset;
 				return *this;
@@ -97,12 +172,6 @@ namespace es
 			std::uint16_t operator- (const iterator_templ<Y> &rhs) const
 			{
 				return (std::uintptr_t(_ptr) - std::uintptr_t(rhs._ptr)) / 2;
-			}
-
-			iterator_templ<Y> &operator+=(const iterator_templ<Y> &rhs)
-			{
-				_ptr += std::uintptr_t(rhs._ptr);
-				return *this;
 			}
 
 			iterator_templ<Y> &operator-=(const iterator_templ<Y> &rhs)
@@ -171,7 +240,12 @@ namespace es
 			return _data[index];
 		}
 
-		~DisArray()
+		const T&operator[](std::uint16_t index) const
+		{
+			return _data[index];
+		}
+
+		~disarray()
 		{
 			if (!(_size >> 15))
 			{

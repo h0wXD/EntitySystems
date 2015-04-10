@@ -28,29 +28,16 @@
    THE SOFTWARE.                                                                
  ********************************************************************************/
 
-#ifndef GAME_SIMPLE_MOVEMENT_MANAGER_H
-#define GAME_SIMPLE_MOVEMENT_MANAGER_H
-
-#include <ES/disarray.h>
-#include <Game/Vector2f.h>
-#include <algorithm>
-#include <iostream>
-#include <ES/inplace_transform.h>
+#ifndef GAME_ILOGIC_H
+#define GAME_ILOGIC_H
 
 namespace game
 {
-	class SimpleMovementManager
+	class ILogic
 	{
 	public:
-		static void Process(es::disarray<Vector2f> *position, es::disarray<Vector2f> *direction, std::int16_t count, float deltaTime)
-		{
-			es::inplace_transform_n(position->begin(), direction->begin(), count, 
-				[deltaTime](Vector2f &pos, const Vector2f &dir)
-				{
-					pos.x += dir.x * deltaTime;
-					pos.y += dir.y * deltaTime;
-				});
-		}
+		virtual void Tick(float dt) = 0;
+		virtual ~ILogic() = 0;
 	};
 }
 

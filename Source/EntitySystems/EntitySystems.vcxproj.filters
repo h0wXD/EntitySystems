@@ -18,16 +18,13 @@
     <ClInclude Include="include\ES\System.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\ES\TestPrintManager.h">
+    <ClInclude Include="include\ES\disarray.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\ES\TestSystem.h">
+    <ClInclude Include="include\ES\ReferribleSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="include\ES\DisArray.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="include\ES\transform_self.h">
+    <ClInclude Include="include\ES\inplace_transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

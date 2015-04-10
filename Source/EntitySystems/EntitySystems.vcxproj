@@ -107,7 +107,10 @@
       <Optimization>MaxSpeed</Optimization>
       <FunctionLevelLinking>true</FunctionLevelLinking>
       <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
+      <SDLCheck>false</SDLCheck>
+      <AssemblerOutput>AssemblyAndSourceCode</AssemblerOutput>
+      <ExceptionHandling>Sync</ExceptionHandling>
+      <EnableEnhancedInstructionSet>StreamingSIMDExtensions2</EnableEnhancedInstructionSet>
     </ClCompile>
     <Link>
       <GenerateDebugInformation>true</GenerateDebugInformation>
@@ -130,11 +133,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="include\ES\DisArray.h" />
+    <ClInclude Include="include\ES\disarray.h" />
+    <ClInclude Include="include\ES\ReferribleSystem.h" />
     <ClInclude Include="include\ES\System.h" />
-    <ClInclude Include="include\ES\TestPrintManager.h" />
-    <ClInclude Include="include\ES\TestSystem.h" />
-    <ClInclude Include="include\ES\transform_self.h" />
+    <ClInclude Include="include\ES\inplace_transform.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\System.cpp" />

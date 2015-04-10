@@ -1,10 +1,41 @@
+﻿/********************************************************************************
+ *                                                                              *
+ *  ╔═════════════╗                                                             *
+ *  ║EntitySystems║                                                             *
+ *  ╚═════════════╝                                                             *
+ *━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━*
+                                                                                
+   Copyright (c) 2015 h0wXD & LorenzJ.                                          
+   https://github.com/h0wXD                                                     
+   https://github.com/LorenzJ                                                   
+                                                                                
+   Permission is hereby granted, free of charge, to any person obtaining a copy 
+   of this software and associated documentation files (the "Software"), to deal
+   in the Software without restriction, including without limitation the rights 
+   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell    
+   copies of the Software, and to permit persons to whom the Software is        
+   furnished to do so, subject to the following conditions:                     
+                                                                                
+   The above copyright notice and this permission notice shall be included in   
+   all copies or substantial portions of the Software.                          
+                                                                                
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR   
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,     
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE  
+   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER       
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN    
+   THE SOFTWARE.                                                                
+ ********************************************************************************/
+
 #ifndef GAME_DUMB_ENEMY_SYSTEM_H
 #define GAME_DUMB_ENEMY_SYSTEM_H
 
-#include <ES/DisArray.h>
-#include <Game/UpdatableSystem.h>
+#include <ES/disarray.h>
+#include <ES/ReferribleSystem.h>
 #include <Game/SimpleMovementManager.h>
 #include <Game/Vector2f.h>
+#include <Game/ILogic.h>
 #include <iostream>
 
 #include <thread>
@@ -12,6 +43,7 @@
 
 namespace game
 {
+
 	class DumbEnemyInstance
 	{
 		friend class DumbEnemySystem;
@@ -25,39 +57,31 @@ namespace game
 		Vector2f &Direction();
 	};
 
-	class DumbEnemySystem : public UpdatableSystem
+	class DumbEnemySystem : public es::ReferribleSystem, public ILogic
 	{
 		friend class DumbEnemyInstance;
-		es::DisArray<float> _health;
-		es::DisArray<Vector2f> _position;
-		es::DisArray<Vector2f> _direction;
+		es::disarray<float> _health;
+		es::disarray<Vector2f> _position;
+		es::disarray<Vector2f> _direction;
 
 		typedef decltype(_health) healthArr;
 		typedef decltype(_position) vectorArr;
 	public:
-		DumbEnemySystem(std::uint16_t size) : UpdatableSystem(size), _health(size), _position(size), _direction(size) { }
+		DumbEnemySystem(std::uint16_t size) : es::ReferribleSystem(size), _health(size), _position(size), _direction(size) { }
 
-		void Tick(float deltaTime)
+		void Remove(Handle handle)
+		{
+			ReferribleSystem::Remove(GetReference(handle));
+			System::Remove(GetHandleId(handle), _elementCount, _health, _position, _direction);
+		}
+
+		void Tick(float deltaTime) override
 		{
 			
-//#define USE_THREADS
+// #define USE_THREADS
 #ifdef USE_THREADS
-			vectorArr p1, p2, p3;
-			vectorArr d1, d2, d3;
-			std::uint16_t size = _elementCount / 3;
-
-			vectorArr::Slice(&p1, _position, size * 0, size);
-			vectorArr::Slice(&p2, _position, size * 1, size);
-			vectorArr::Slice(&p3, _position, size * 2, size);
-
-			vectorArr::Slice(&d1, _direction, size * 0, size);
-			vectorArr::Slice(&d2, _direction, size * 1, size);
-			vectorArr::Slice(&d3, _direction, size * 2, size);
-			
-			std::thread t2(SimpleMovementManager::Process, &p1, &d1, size, deltaTime);
-			std::thread t3(SimpleMovementManager::Process, &p2, &d2, size, deltaTime);
-			std::thread t4(SimpleMovementManager::Process, &p3, &d3, size, deltaTime);
-			std::thread t1([](healthArr *health, std::uint16_t count, float deltaTime)
+			std::thread t1(SimpleMovementManager::Process, &_position, &_direction, _elementCount, deltaTime);
+			std::thread t2([](healthArr *health, std::uint16_t count, float deltaTime)
 			{
 				float *healthIt = health->GetRaw();
 				for (std::uint16_t i = 0; i < count; ++i, ++healthIt)
@@ -66,10 +90,9 @@ namespace game
 				}
 			}, &_health, _elementCount, deltaTime);
 
-			t2.join();
-			t3.join();
-			t4.join();
 			t1.join();
+			t2.join();
+			
 #undef USE_THREADS
 #else
 			SimpleMovementManager::Process(&_position, &_direction, _elementCount, deltaTime);
@@ -79,12 +102,26 @@ namespace game
 			{
 				*healthIt -= deltaTime;
 			}
+
+			healthIt = _health.GetRaw();
+			for (std::uint16_t i = 0; i < count; ++i, ++healthIt)
+			{
+				if (*healthIt <= 0)
+				{
+					Remove(CreateHandle(i));
+				}
+			}
 #endif
+		}
+
+		DumbEnemyInstance GetInstance(Handle handle)
+		{
+			return DumbEnemyInstance(this, handle);
 		}
 
 		DumbEnemyInstance GetInstance(Reference reference)
 		{
-			return DumbEnemyInstance(this, this->GetHandle(reference));
+			return GetInstance(GetHandle(reference));
 		}
 	};
 

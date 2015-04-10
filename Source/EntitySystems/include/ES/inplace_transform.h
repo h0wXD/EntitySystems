@@ -28,30 +28,50 @@
    THE SOFTWARE.                                                                
  ********************************************************************************/
 
-#ifndef GAME_SIMPLE_MOVEMENT_MANAGER_H
-#define GAME_SIMPLE_MOVEMENT_MANAGER_H
+#ifndef ES_TRANSFORM_SELF_H
+#define ES_TRANSFORM_SELF_H
 
-#include <ES/disarray.h>
-#include <Game/Vector2f.h>
+#include <cstddef>
 #include <algorithm>
-#include <iostream>
-#include <ES/inplace_transform.h>
 
-namespace game
+namespace es
 {
-	class SimpleMovementManager
+	/**
+	 * @brief Transforms Target with data from Input using a binary Operation
+	 *
+	 * Transforms Target in place.
+	 * Input is used as the data to transform the Target with
+	 * Operation is a binary operation (takes two paramaters of decltype(*Target), decltype(*Input))
+	 * The Operation is expected to be of type void
+	 * The output gets written to Target
+	 *
+	 * @param start     Start of the Target iterator
+	 * @param end       End of the Target iterator
+	 * @param input     Start of the Input iterator
+	 * @param operation Operation to perform on *Target, *Input
+	 */
+	template <class Target, class Input, class Operation>
+	void inplace_transform(Target start, Target end, Input input, Operation operation)
 	{
-	public:
-		static void Process(es::disarray<Vector2f> *position, es::disarray<Vector2f> *direction, std::int16_t count, float deltaTime)
+		while (start != end)
 		{
-			es::inplace_transform_n(position->begin(), direction->begin(), count, 
-				[deltaTime](Vector2f &pos, const Vector2f &dir)
-				{
-					pos.x += dir.x * deltaTime;
-					pos.y += dir.y * deltaTime;
-				});
+			operation(*start, *input);
+			++start;
+			++input;
 		}
-	};
-}
+	}
 
+	template <class Target, class Input, class Operation>
+	void inplace_transform(Target &target, Input &input, Operation operation)
+	{
+		inplace_transform(target.begin(), target.end(), input.begin(), operation);
+	}
+
+	template <class Target, class Input, class Operation>
+	void inplace_transform_n(Target target, Input input, std::size_t n, Operation operation)
+	{
+		inplace_transform(target, target + n, input, operation);
+	}
+
+}
 #endif

@@ -1,7 +1,37 @@
+﻿/********************************************************************************
+ *                                                                              *
+ *  ╔═════════════╗                                                             *
+ *  ║EntitySystems║                                                             *
+ *  ╚═════════════╝                                                             *
+ *━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━*
+                                                                                
+   Copyright (c) 2015 h0wXD & LorenzJ.                                          
+   https://github.com/h0wXD                                                     
+   https://github.com/LorenzJ                                                   
+                                                                                
+   Permission is hereby granted, free of charge, to any person obtaining a copy 
+   of this software and associated documentation files (the "Software"), to deal
+   in the Software without restriction, including without limitation the rights 
+   to use, copy, modify, merge, publish, distribute, sublicense, and/or sell    
+   copies of the Software, and to permit persons to whom the Software is        
+   furnished to do so, subject to the following conditions:                     
+                                                                                
+   The above copyright notice and this permission notice shall be included in   
+   all copies or substantial portions of the Software.                          
+                                                                                
+   THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR   
+   IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,     
+   FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE  
+   AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER       
+   LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+   OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN    
+   THE SOFTWARE.                                                                
+ ********************************************************************************/
+
 #ifndef ES_SYSTEM_H
 #define ES_SYSTEM_H
 
-#include <ES/DisArray.h>
+#include <ES/disarray.h>
 
 #include <cstddef>
 #include <cstdint>
@@ -11,16 +41,23 @@
 
 namespace es
 {
+	/**
+	 * @brief Abstract base class for systems.
+	 *
+	 * A system contains collections of components that define entities and their behaviors.
+	 */
 	class System
 	{ 
-		DisArray<std::uint16_t> _referenceArray;
 	protected:
 		std::uint16_t _elementCount;
 
+		/*********************************************
+		 * Helper template methods for child classes *
+		 *********************************************/
 		template <class T>
 		static void Remove(std::uint16_t destination, std::uint16_t source, T &t)
 		{
-			t.Move(destination, source);
+			t[destination] = t[source];
 		}
 
 		template <class T, class ...Y>
@@ -30,10 +67,18 @@ namespace es
 			Remove(destination, source, tail...);
 		}
 
-
 	public:
-		virtual ~System() = 0;
 
+		/******************************
+		 * Handle and reference class *
+		 ******************************/
+
+		/**
+		 * @brief A temporary handle to an entity in the system
+		 *
+		 * A temporary handle to an entity in the system.
+		 * Can become invalid upon removal of an entity or after processing the system.
+		 */
 		class Handle
 		{
 			friend class System;
@@ -45,8 +90,15 @@ namespace es
 			{
 				return _id;
 			}
+
 		};
 
+		/**
+		 * @brief A permanent handle to an entity in the system
+		 *
+		 * A permanent handle to an entity in the system.
+		 * Will remain valid for as long as the entity that is referred to hasn't been removed.
+		 */
 		class Reference
 		{
 			friend class System;
@@ -54,14 +106,35 @@ namespace es
 		public:
 			Reference(std::uint16_t id) : _id(id) { }
 			Reference() : _id(UINT16_MAX) { }
+
+			bool operator==(nullptr_t)
+			{
+				return _id == UINT16_MAX;
+			}
+
+			bool operator!=(nullptr_t)
+			{
+				return _id != UINT16_MAX;
+			}
+
+			Reference &operator=(nullptr_t)
+			{
+				_id = UINT16_MAX;
+			}
 		};
 	
-		System(std::size_t size) : _referenceArray(size), _elementCount(0)
-		{ 
-			std::fill(_referenceArray.begin(), _referenceArray.end(), UINT16_MAX);
-		}
+		System() : _elementCount(0) { }
+		virtual ~System() = 0;
 
 	protected:	
+		
+		/************************************
+		 * Helper methods for child classes *
+		 ************************************/
+		inline void IncreaseElementCount()
+		{
+			++_elementCount;
+		}
 
 		static void SetHandle(Handle &h, std::uint16_t id)
 		{
@@ -78,6 +151,11 @@ namespace es
 			return Handle(_elementCount);
 		}
 
+		Reference CreateReference(std::uint16_t id) const
+		{
+			return Reference(id);
+		}
+
 		static std::uint16_t GetReferenceId(const Reference &ref)
 		{
 			return ref._id;
@@ -88,47 +166,6 @@ namespace es
 			return handle._id;
 		}
 
-		Reference Add(Handle handle)
-		{
-			auto ref = std::find_if(_referenceArray.begin(), _referenceArray.end(), [&](const std::uint16_t r)
-			{ 
-				return r == UINT16_MAX;
-			});
-			*ref = _elementCount;
-			++_elementCount;
-			return Reference(ref - _referenceArray.begin());
-		}
-
-		void Remove(Reference ref)
-		{
-			--_elementCount;
-			auto it = std::find(_referenceArray.begin(), _referenceArray.end(), _elementCount);
-			*it = _referenceArray[ref._id];
-			_referenceArray[ref._id] = UINT16_MAX;
-		}
-
-	public:
-
-		Reference Add()
-		{
-			Handle handle = CreateHandle(_elementCount);
-			return Add(handle);
-		}
-
-		Handle GetHandle(Reference ref)
-		{
-			return CreateHandle(_referenceArray[ref._id]);
-		}
-
-		Reference GetReference(const Handle h)
-		{
-			auto it = std::find_if(_referenceArray.begin(), _referenceArray.begin() + _elementCount, [&h](const std::uint16_t r)
-			{
-				return r == GetHandleId(h);
-			});
-
-			return Reference(it - _referenceArray.begin());
-		}
 	};
 }
 
