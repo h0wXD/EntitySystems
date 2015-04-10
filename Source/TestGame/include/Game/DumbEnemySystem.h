@@ -1,9 +1,9 @@
 ﻿/********************************************************************************
- *                                                                              *
- *  ╔═════════════╗                                                             *
- *  ║EntitySystems║                                                             *
- *  ╚═════════════╝                                                             *
- *━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━*
+ │ 
+ │  ╔═════════════╗
+ │  ║EntitySystems║
+ │  ╚═════════════╝
+ ╰╼━━━━━━━━━━━━━━━━━━━━━━━╾
                                                                                 
    Copyright (c) 2015 h0wXD & LorenzJ.                                          
    https://github.com/h0wXD                                                     
@@ -28,6 +28,7 @@
    THE SOFTWARE.                                                                
  ********************************************************************************/
 
+
 #ifndef GAME_DUMB_ENEMY_SYSTEM_H
 #define GAME_DUMB_ENEMY_SYSTEM_H
 
@@ -37,10 +38,6 @@
 #include <Game/SimpleMovementManager.h>
 #include <Game/Vector2f.h>
 #include <Game/ILogic.h>
-#include <iostream>
-
-#include <thread>
-#include <future>
 
 namespace game
 {
@@ -101,7 +98,7 @@ namespace game
 				toRemove[count++] = i;
 			};
 
-			es::for_where(_health.begin(), _health.begin() + _elementCount, HealthLessEqZero, AddToRemove);
+			es::for_where_n(_health.begin(), _elementCount, HealthLessEqZero, AddToRemove);
 			while (--count >= 0)
 			{
 				Remove(GetHandle(toRemove[count]));

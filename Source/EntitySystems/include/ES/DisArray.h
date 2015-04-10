@@ -1,9 +1,9 @@
 ﻿/********************************************************************************
- *                                                                              *
- *  ╔═════════════╗                                                             *
- *  ║EntitySystems║                                                             *
- *  ╚═════════════╝                                                             *
- *━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━*
+ │ 
+ │  ╔═════════════╗
+ │  ║EntitySystems║
+ │  ╚═════════════╝
+ ╰╼━━━━━━━━━━━━━━━━━━━━━━━╾
                                                                                 
    Copyright (c) 2015 h0wXD & LorenzJ.                                          
    https://github.com/h0wXD                                                     
@@ -27,6 +27,7 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN    
    THE SOFTWARE.                                                                
  ********************************************************************************/
+
 
 #ifndef ES_DISARRAY_H
 #define ES_DISARRAY_H
@@ -64,6 +65,14 @@ namespace es
 
 		disarray() : _data(nullptr), _size(0) { }
 
+		~disarray()
+		{
+			if (!(_size >> 15))
+			{
+				delete[] _data;
+			}
+		}
+
 		/**
 		 * @brief Allocates a disarray at runtime
 		 *
@@ -81,22 +90,7 @@ namespace es
 		{
 			return _data;
 		}
-
-		T *data()
-		{
-			return _data;
-		}
-
-		std::uint16_t size() const
-		{
-			return _size & BITMASK;
-		}
-
-		const T *data() const
-		{
-			return _data;
-		}
-
+		
 		std::uint16_t GetSize() const
 		{
 			return _size & BITMASK;
@@ -222,8 +216,26 @@ namespace es
 
 		};
 
+		/********************************
+		 * For interaction with the STL *
+		 ********************************/
 		typedef iterator_templ<T> iterator;
 		typedef const iterator_templ<T> const_iterator;
+
+		T *data()
+		{
+			return _data;
+		}
+
+		const T *data() const
+		{
+			return _data;
+		}
+
+		std::uint16_t size() const
+		{
+			return _size & BITMASK;
+		}
 
 		iterator_templ<T> begin() const
 		{
@@ -244,14 +256,7 @@ namespace es
 		{
 			return _data[index];
 		}
-
-		~disarray()
-		{
-			if (!(_size >> 15))
-			{
-				delete[] _data;
-			}
-		}
+		
 	};
 }
 #endif

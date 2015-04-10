@@ -1,9 +1,9 @@
 ﻿/********************************************************************************
- *                                                                              *
- *  ╔═════════════╗                                                             *
- *  ║EntitySystems║                                                             *
- *  ╚═════════════╝                                                             *
- *━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━*
+ │ 
+ │  ╔═════════════╗
+ │  ║EntitySystems║
+ │  ╚═════════════╝
+ ╰╼━━━━━━━━━━━━━━━━━━━━━━━╾
                                                                                 
    Copyright (c) 2015 h0wXD & LorenzJ.                                          
    https://github.com/h0wXD                                                     
@@ -28,6 +28,7 @@
    THE SOFTWARE.                                                                
  ********************************************************************************/
 
+
 #ifndef ES_TRANSFORM_SELF_H
 #define ES_TRANSFORM_SELF_H
 
@@ -45,10 +46,10 @@ namespace es
 	 * The Operation is expected to be of type void
 	 * The output gets written to Target
 	 *
-	 * @param start     Start of the Target iterator
-	 * @param end       End of the Target iterator
-	 * @param input     Start of the Input iterator
-	 * @param operation Operation to perform on *Target, *Input
+	 * @tparam start     Start of the Target iterator
+	 * @tparam end       End of the Target iterator
+	 * @tparam input     Start of the Input iterator
+	 * @tparam operation Operation to perform on *Target, *Input
 	 */
 	template <class Target, class Input, class Operation>
 	void inplace_transform(Target start, Target end, Input input, Operation operation)

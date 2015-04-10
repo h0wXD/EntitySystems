@@ -1,9 +1,9 @@
 ﻿/********************************************************************************
- *                                                                              *
- *  ╔═════════════╗                                                             *
- *  ║EntitySystems║                                                             *
- *  ╚═════════════╝                                                             *
- *━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━*
+ │ 
+ │  ╔═════════════╗
+ │  ║EntitySystems║
+ │  ╚═════════════╝
+ ╰╼━━━━━━━━━━━━━━━━━━━━━━━╾
                                                                                 
    Copyright (c) 2015 h0wXD & LorenzJ.                                          
    https://github.com/h0wXD                                                     
@@ -27,6 +27,7 @@
    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN    
    THE SOFTWARE.                                                                
  ********************************************************************************/
+
 
 #ifndef GAME_VECTOR2F_H
 #define GAME_VECTOR2F_H
@@ -56,7 +57,7 @@ namespace game
 		/**
 		 * @brief Creates a unit vector pointing in the direction of a
 		 *
-		 * @param a Angle in radians
+		 * @param an Angle in radians
 		 */
 		static Vector2f FromAngle(float a)
 		{
@@ -164,10 +165,9 @@ namespace game
 			return v;
 		}
 
-		friend Vector2f operator*(const Vector2f &v, float scalar)
+		friend Vector2f operator*(Vector2f v, float scalar)
 		{
-			auto v2(v);
-			return v2 *= scalar;
+			return v *= scalar;
 		}
 
 		friend Vector2f operator*(float scalar, const Vector2f &v)

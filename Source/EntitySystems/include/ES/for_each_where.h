@@ -1,9 +1,9 @@
 ﻿/********************************************************************************
- *                                                                              *
- *  ╔═════════════╗                                                             *
- *  ║EntitySystems║                                                             *
- *  ╚═════════════╝                                                             *
- *━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━*
+ │ 
+ │  ╔═════════════╗
+ │  ║EntitySystems║
+ │  ╚═════════════╝
+ ╰╼━━━━━━━━━━━━━━━━━━━━━━━╾
                                                                                 
    Copyright (c) 2015 h0wXD & LorenzJ.                                          
    https://github.com/h0wXD                                                     
@@ -28,10 +28,12 @@
    THE SOFTWARE.                                                                
  ********************************************************************************/
 
+
 #ifndef ES_FOR_EACH_WHERE_H
 #define ES_FOR_EACH_WHERE_H
 
 #include <utility>
+#include <cstddef>
 
 namespace es
 {
@@ -48,6 +50,12 @@ namespace es
 		}
 	}
 
+	template <class Container, class Predicate, class Operation>
+	void for_each_where(Container container, Predicate predicate, Operation operation)
+	{
+		for_each_where(container.begin(), container.end(), predicate, operation);
+	}
+
 	template <class Iterator, class Predicate, class Operation>
 	void for_where(Iterator begin, Iterator end, Predicate predicate, Operation operation)
 	{
@@ -59,6 +67,19 @@ namespace es
 			}
 		}
 	};
+
+	template <class Container, class Predicate, class Operation>
+	void for_where(Container container, Predicate predicate, Operation operation)
+	{
+		for_where(container.begin(), container.end(), predicate, operation);
+	}
+
+	template <class Iterator, class Predicate, class Operation>
+	void for_where_n(Iterator begin, std::size_t count, Predicate predicate, Operation operation)
+	{
+		for_where(begin, begin + count, predicate, operation);
+	}
+
 }
 
 #endif
