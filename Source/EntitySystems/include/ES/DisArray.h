@@ -44,8 +44,8 @@ namespace es
 	 * A small static sized array that gets allocated at runtime
 	 * Supports up to 32767 items
 	 * Can be reallocated at runtime but will not remember its previous data
-	 * Does not keep track of how many member it stores nor does it do any
-	 * range checking.
+	 * Does not keep track of how many items it stores nor does it do any
+	 * range checking. Does keep track of its capacity.
 	 */
 	template <class T>
 	class disarray final
