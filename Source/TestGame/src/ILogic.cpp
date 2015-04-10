@@ -28,30 +28,9 @@
    THE SOFTWARE.                                                                
  ********************************************************************************/
 
-#include <ES/System.h>
-#include <Game/Vector2f.h>
-#include <Game/DumbEnemySystem.h>
-#include <iostream>
-#include <chrono>
+#include <Game/ILogic.h>
 
-int main(int argc, char *argv[])
+namespace game
 {
-	game::DumbEnemySystem system(100);
-	
-	{
-		es::System::Reference reference = system.Add();
-		game::DumbEnemyInstance instance = system.GetInstance(reference);
-		instance.Health() = 5.f;
-	}
-
-	{
-		es::System::Reference reference = system.Add();
-		game::DumbEnemyInstance instance = system.GetInstance(reference);
-		instance.Health() = -0.5f;
-	}
-
-	system.Tick(0.16f);
-	std::cin.peek();
-	return 0;
+	ILogic::~ILogic() { }
 }
-

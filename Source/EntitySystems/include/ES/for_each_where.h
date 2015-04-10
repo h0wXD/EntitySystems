@@ -28,30 +28,37 @@
    THE SOFTWARE.                                                                
  ********************************************************************************/
 
-#include <ES/System.h>
-#include <Game/Vector2f.h>
-#include <Game/DumbEnemySystem.h>
-#include <iostream>
-#include <chrono>
+#ifndef ES_FOR_EACH_WHERE_H
+#define ES_FOR_EACH_WHERE_H
 
-int main(int argc, char *argv[])
+#include <utility>
+
+namespace es
 {
-	game::DumbEnemySystem system(100);
-	
+	template <class Iterator, class Predicate, class Operation>
+	void for_each_where(Iterator begin, Iterator end, Predicate predicate, Operation operation)
 	{
-		es::System::Reference reference = system.Add();
-		game::DumbEnemyInstance instance = system.GetInstance(reference);
-		instance.Health() = 5.f;
+		while (begin != end)
+		{
+			if (predicate(*begin))
+			{
+				operation(*begin);
+			}
+			++begin;
+		}
 	}
 
+	template <class Iterator, class Predicate, class Operation>
+	void for_where(Iterator begin, Iterator end, Predicate predicate, Operation operation)
 	{
-		es::System::Reference reference = system.Add();
-		game::DumbEnemyInstance instance = system.GetInstance(reference);
-		instance.Health() = -0.5f;
-	}
-
-	system.Tick(0.16f);
-	std::cin.peek();
-	return 0;
+		for (int i = 0; begin != end; ++i, ++begin)
+		{
+			if (predicate(*begin))
+			{
+				operation(i);
+			}
+		}
+	};
 }
 
+#endif

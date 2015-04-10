@@ -82,14 +82,14 @@ namespace es
 			return _data;
 		}
 
-		std::uint16_t size() const
-		{
-			return _size & BITMASK;
-		}
-
 		T *data()
 		{
 			return _data;
+		}
+
+		std::uint16_t size() const
+		{
+			return _size & BITMASK;
 		}
 
 		const T *data() const

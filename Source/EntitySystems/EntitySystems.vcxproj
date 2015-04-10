@@ -134,6 +134,7 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClInclude Include="include\ES\disarray.h" />
+    <ClInclude Include="include\ES\for_each_where.h" />
     <ClInclude Include="include\ES\ReferribleSystem.h" />
     <ClInclude Include="include\ES\System.h" />
     <ClInclude Include="include\ES\inplace_transform.h" />

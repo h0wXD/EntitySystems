@@ -33,6 +33,7 @@
 
 #include <ES/disarray.h>
 #include <ES/ReferribleSystem.h>
+#include <ES/for_each_where.h>
 #include <Game/SimpleMovementManager.h>
 #include <Game/Vector2f.h>
 #include <Game/ILogic.h>
@@ -44,6 +45,13 @@
 namespace game
 {
 
+	/**********************************
+	 * Dumb Enemy instance definition *
+	 **********************************/
+
+	/**
+	 * @brief OO-like class to handle Dumb enemies
+	 */
 	class DumbEnemyInstance
 	{
 		friend class DumbEnemySystem;
@@ -57,6 +65,9 @@ namespace game
 		Vector2f &Direction();
 	};
 
+	/*********************
+	 * Dumb Enemy system *
+	 *********************/
 	class DumbEnemySystem : public es::ReferribleSystem, public ILogic
 	{
 		friend class DumbEnemyInstance;
@@ -77,54 +88,46 @@ namespace game
 
 		void Tick(float deltaTime) override
 		{
+			int toRemove[255];
+			int count = 0;
 			
-// #define USE_THREADS
-#ifdef USE_THREADS
-			std::thread t1(SimpleMovementManager::Process, &_position, &_direction, _elementCount, deltaTime);
-			std::thread t2([](healthArr *health, std::uint16_t count, float deltaTime)
-			{
-				float *healthIt = health->GetRaw();
-				for (std::uint16_t i = 0; i < count; ++i, ++healthIt)
-				{
-					*healthIt -= deltaTime;
-				}
-			}, &_health, _elementCount, deltaTime);
-
-			t1.join();
-			t2.join();
-			
-#undef USE_THREADS
-#else
 			SimpleMovementManager::Process(&_position, &_direction, _elementCount, deltaTime);
-			float *healthIt = _health.GetRaw();
-			std::uint16_t count = _elementCount;
-			for (std::uint16_t i = 0; i < count; ++i, ++healthIt)
+			auto HealthLessEqZero = [](const float h)
 			{
-				*healthIt -= deltaTime;
-			}
+				return h <= 0.f;
+			};
+			auto AddToRemove = [&count, &toRemove](int i)
+			{
+				toRemove[count++] = i;
+			};
 
-			healthIt = _health.GetRaw();
-			for (std::uint16_t i = 0; i < count; ++i, ++healthIt)
+			es::for_where(_health.begin(), _health.begin() + _elementCount, HealthLessEqZero, AddToRemove);
+			while (--count >= 0)
 			{
-				if (*healthIt <= 0)
-				{
-					Remove(CreateHandle(i));
-				}
+				Remove(GetHandle(toRemove[count]));
 			}
-#endif
 		}
 
+		/**
+		 * @brief Get a DumbEnemyInstance by Handle
+		 */
 		DumbEnemyInstance GetInstance(Handle handle)
 		{
 			return DumbEnemyInstance(this, handle);
 		}
 
+		/**
+		 * @brief Get a DumbEnemyInstance by Reference
+		 */
 		DumbEnemyInstance GetInstance(Reference reference)
 		{
 			return GetInstance(GetHandle(reference));
 		}
 	};
 
+	/**************************************
+	 * Dumb enemy instance implementation *
+	 **************************************/
 	float &DumbEnemyInstance::Health()
 	{
 		return _system->_health[_handle.GetId()];

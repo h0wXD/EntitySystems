@@ -27,6 +27,9 @@
     <ClInclude Include="include\ES\inplace_transform.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="include\ES\for_each_where.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\System.cpp">
