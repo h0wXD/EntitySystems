@@ -33,7 +33,6 @@
 #define ES_TRANSFORM_SELF_H
 
 #include <cstddef>
-#include <algorithm>
 
 namespace es
 {

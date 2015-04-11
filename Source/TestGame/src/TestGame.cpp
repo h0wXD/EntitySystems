@@ -30,10 +30,8 @@
 
 
 #include <ES/System.h>
-#include <Game/Vector2f.h>
 #include <Game/DumbEnemySystem.h>
 #include <iostream>
-#include <chrono>
 
 int main(int argc, char *argv[])
 {

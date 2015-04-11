@@ -34,8 +34,6 @@
 
 #include <ES/disarray.h>
 #include <Game/Vector2f.h>
-#include <algorithm>
-#include <iostream>
 #include <ES/inplace_transform.h>
 
 namespace game

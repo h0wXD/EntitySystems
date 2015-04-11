@@ -32,7 +32,6 @@
 #ifndef ES_FOR_EACH_WHERE_H
 #define ES_FOR_EACH_WHERE_H
 
-#include <utility>
 #include <cstddef>
 
 namespace es

@@ -33,6 +33,7 @@
 #define ES_REFERRIBLE_SYSTEM_H
 
 #include <ES/System.h>
+#include <algorithm>
 
 namespace es
 {

@@ -36,9 +36,6 @@
 
 #include <cstddef>
 #include <cstdint>
-#include <algorithm>
-#include <type_traits>
-
 
 namespace es
 {
