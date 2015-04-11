@@ -49,6 +49,8 @@ namespace game
 	/**
 	 * @brief OO-like class to handle Dumb enemies
 	 */
+	class DumbEnemySystem;
+	
 	class DumbEnemyInstance
 	{
 		friend class DumbEnemySystem;
