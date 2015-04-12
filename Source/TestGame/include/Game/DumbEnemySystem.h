@@ -77,7 +77,7 @@ namespace game
 		typedef decltype(_health) healthArr;
 		typedef decltype(_position) vectorArr;
 	public:
-		DumbEnemySystem(std::uint16_t size) : es::ReferribleSystem(size), _health(size), _position(size), _direction(size) { }
+		explicit DumbEnemySystem(std::uint16_t size) : es::ReferribleSystem(size), _health(size), _position(size), _direction(size) { }
 
 		void Remove(Handle handle)
 		{
@@ -103,7 +103,7 @@ namespace game
 			es::for_where_n(_health.begin(), _elementCount, HealthLessEqZero, AddToRemove);
 			while (--count >= 0)
 			{
-				Remove(GetHandle(toRemove[count]));
+				Remove(GetHandle(CreateReference(toRemove[count])));
 			}
 		}
 
@@ -127,17 +127,17 @@ namespace game
 	/**************************************
 	 * Dumb enemy instance implementation *
 	 **************************************/
-	float &DumbEnemyInstance::Health()
+	inline float &DumbEnemyInstance::Health()
 	{
 		return _system->_health[_handle.GetId()];
 	}
 
-	Vector2f &DumbEnemyInstance::Position()
+	inline Vector2f &DumbEnemyInstance::Position()
 	{
 		return _system->_position[_handle.GetId()];
 	}
 
-	Vector2f &DumbEnemyInstance::Direction()
+	inline Vector2f &DumbEnemyInstance::Direction()
 	{
 		return _system->_direction[_handle.GetId()];
 	}

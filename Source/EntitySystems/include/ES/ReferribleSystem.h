@@ -50,7 +50,7 @@ namespace es
 		disarray<std::uint16_t> _referenceArray; /** reference to handle lookup */
 		disarray<std::uint16_t> _handleArray; /** handle to reference lookup */
 
-		Reference Add(Handle handle)
+		Reference AddHandle()
 		{
 			auto ref = std::find_if(_referenceArray.begin(), _referenceArray.end(), [&](const std::uint16_t r)
 			{
@@ -75,7 +75,7 @@ namespace es
 			_referenceArray[System::GetReferenceId(ref)] = UINT16_MAX;
 		}
 	public:
-		ReferribleSystem(std::uint16_t size) : _referenceArray(size), _handleArray(size)
+		explicit ReferribleSystem(std::uint16_t size) : _referenceArray(size), _handleArray(size)
 		{
 			std::fill(_referenceArray.begin(), _referenceArray.end(), UINT16_MAX);
 		}
@@ -85,8 +85,7 @@ namespace es
 		 */
 		Reference Add()
 		{
-			Handle handle = CreateHandle(_elementCount);
-			return Add(handle);
+			return AddHandle();
 		}
 
 		/**

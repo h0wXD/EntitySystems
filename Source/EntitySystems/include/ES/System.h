@@ -82,7 +82,7 @@ namespace es
 			friend class System;
 			friend class Reference;
 			std::uint16_t _id;
-			Handle(std::uint16_t id) : _id(id) { }
+			explicit Handle(std::uint16_t id) : _id(id) { }
 		public:
 			std::uint16_t GetId()
 			{
@@ -102,7 +102,7 @@ namespace es
 			friend class System;
 			std::uint16_t _id;
 		public:
-			Reference(std::uint16_t id) : _id(id) { }
+			explicit Reference(std::uint16_t id) : _id(id) { }
 			Reference() : _id(UINT16_MAX) { }
 
 			bool operator==(nullptr_t)
@@ -118,6 +118,7 @@ namespace es
 			Reference &operator=(nullptr_t)
 			{
 				_id = UINT16_MAX;
+				return *this;
 			}
 		};
 	

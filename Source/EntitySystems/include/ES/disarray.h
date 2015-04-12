@@ -57,7 +57,7 @@ namespace es
 		std::uint16_t _size;
 	public:
 
-		disarray(std::uint16_t size) :
+		explicit disarray(std::uint16_t size) :
 			_size(size)
 		{
 			_data = new T[size];
@@ -114,7 +114,7 @@ namespace es
 		{
 			Y *_ptr;
 		public:
-			iterator_templ(Y *ptr) : _ptr(ptr) {}
+			explicit iterator_templ(Y *ptr) : _ptr(ptr) {}
 
 			iterator_templ<Y> &operator++()
 			{

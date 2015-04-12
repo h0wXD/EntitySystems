@@ -61,7 +61,7 @@ namespace game
 		 */
 		static Vector2f FromAngle(float a)
 		{
-			Vector2f(::cos(a), ::sin(a));
+			return Vector2f(::cos(a), ::sin(a));
 		}
 
 		/***********
@@ -89,7 +89,7 @@ namespace game
 		 */
 		Vector2f &Normalize()
 		{
-			float length = GetLength();
+			auto length = GetLength();
 			x /= length;
 			y /= length;
 			return *this;

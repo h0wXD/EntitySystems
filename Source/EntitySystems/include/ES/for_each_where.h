@@ -58,7 +58,7 @@ namespace es
 	template <class Iterator, class Predicate, class Operation>
 	void for_where(Iterator begin, Iterator end, Predicate predicate, Operation operation)
 	{
-		for (int i = 0; begin != end; ++i, ++begin)
+		for (auto i = 0; begin != end; ++i, ++begin)
 		{
 			if (predicate(*begin))
 			{

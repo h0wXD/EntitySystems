@@ -38,14 +38,14 @@ int main(int argc, char *argv[])
 	game::DumbEnemySystem system(100);
 	
 	{
-		es::System::Reference reference = system.Add();
-		game::DumbEnemyInstance instance = system.GetInstance(reference);
+		auto reference = system.Add();
+		auto instance = system.GetInstance(reference);
 		instance.Health() = 5.f;
 	}
 
 	{
-		es::System::Reference reference = system.Add();
-		game::DumbEnemyInstance instance = system.GetInstance(reference);
+		auto reference = system.Add();
+		auto instance = system.GetInstance(reference);
 		instance.Health() = -0.5f;
 	}
 
