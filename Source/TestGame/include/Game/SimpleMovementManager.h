@@ -33,7 +33,7 @@
 #define GAME_SIMPLE_MOVEMENT_MANAGER_H
 
 #include <ES/disarray.h>
-#include <Game/Vector2f.h>
+#include <Game/Vector2.h>
 #include <ES/inplace_transform.h>
 
 namespace game

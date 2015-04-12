@@ -36,7 +36,7 @@
 #include <ES/ReferribleSystem.h>
 #include <ES/for_each_where.h>
 #include <Game/SimpleMovementManager.h>
-#include <Game/Vector2f.h>
+#include <Game/Vector2.h>
 #include <Game/ILogic.h>
 
 namespace game

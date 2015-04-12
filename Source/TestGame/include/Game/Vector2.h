@@ -36,22 +36,23 @@
 
 namespace game
 {
-	class Vector2f
+	template <class T>
+	class Vector2
 	{
 	public:
-		float x;
-		float y;
+		T x;
+		T y;
 
 		/****************
 		 * Construction *
 		 ****************/
 
-		Vector2f() { }
-		Vector2f(float x, float y) : x(x), y(y) { }
+		Vector2() { }
+		Vector2(T x, T y) : x(x), y(y) { }
 
-		static Vector2f CreateZero()
+		static Vector2 CreateZero()
 		{
-			return Vector2f(0, 0);
+			return Vector2(0, 0);
 		}
 
 		/**
@@ -59,9 +60,9 @@ namespace game
 		 *
 		 * @param an Angle in radians
 		 */
-		static Vector2f FromAngle(float a)
+		static Vector2 FromAngle(T a)
 		{
-			return Vector2f(::cos(a), ::sin(a));
+			return Vector2(::cos(a), ::sin(a));
 		}
 
 		/***********
@@ -71,7 +72,7 @@ namespace game
 		/**
 		 * @brief Returns the magnitude squared
 		 */
-		float GetLength2() const
+		T GetLength2() const
 		{
 			return x * x + y * y;
 		}
@@ -79,7 +80,7 @@ namespace game
 		/**
 		 * @brief Returns the magnitude
 		 */
-		float GetLength() const
+		T GetLength() const
 		{
 			return ::sqrt(GetLength2());
 		}
@@ -87,7 +88,7 @@ namespace game
 		/**
 		 * @brief Normalizes the vector.
 		 */
-		Vector2f &Normalize()
+		Vector2 &Normalize()
 		{
 			auto length = GetLength();
 			x /= length;
@@ -98,88 +99,91 @@ namespace game
 		/**
 		 * @brief Returns a unit vector pointing in the same direction as the current vector
 		 */
-		Vector2f Normalized() const
+		Vector2 Normalized() const
 		{
 			auto v(*this);
 			return v.Normalize();
 		}
 
-		static float Cross(const Vector2f &lhs, const Vector2f &rhs)
+		static T Cross(const Vector2 &lhs, const Vector2 &rhs)
 		{
 			return lhs.x * rhs.y - lhs.y * rhs.x;
 		}
 
-		static float Dot(const Vector2f &lhs, const Vector2f &rhs)
+		static T Dot(const Vector2 &lhs, const Vector2 &rhs)
 		{
 			return lhs.x * rhs.x + lhs.y * rhs.y;
 		}
 
 		/**********************
-		 * Vector2f operators *
+		 * Vector2 operators *
 		 **********************/
 
 		/**
 		 * @brief Cross product
 		 */
-		friend float operator%(const Vector2f &lhs, const Vector2f &rhs)
+		friend T operator%(const Vector2 &lhs, const Vector2 &rhs)
 		{
-			return Vector2f::Cross(lhs, rhs);
+			return Vector2::Cross(lhs, rhs);
 		}
 
 		/**
 		 * @brief Dot product
 		 */
-		friend float operator*(const Vector2f &lhs, const Vector2f &rhs)
+		friend T operator*(const Vector2 &lhs, const Vector2 &rhs)
 		{
-			return Vector2f::Dot(lhs, rhs);
+			return Vector2::Dot(lhs, rhs);
 		}
 
-		friend Vector2f &operator+=(Vector2f &lhs, const Vector2f &rhs)
+		friend Vector2 &operator+=(Vector2 &lhs, const Vector2 &rhs)
 		{
 			lhs.x += rhs.x;
 			lhs.y += rhs.y;
 			return lhs;
 		}
 
-		friend Vector2f &operator-=(Vector2f &lhs, const Vector2f &rhs)
+		friend Vector2 &operator-=(Vector2 &lhs, const Vector2 &rhs)
 		{
 			lhs.x -= rhs.x;
 			lhs.y -= rhs.y;
 			return lhs;
 		}
 
-		friend Vector2f operator+ (Vector2f lhs, const Vector2f &rhs)
+		friend Vector2 operator+ (Vector2 lhs, const Vector2 &rhs)
 		{
 			return lhs += rhs;
 		}
 
-		friend Vector2f operator- (Vector2f lhs, const Vector2f &rhs)
+		friend Vector2 operator- (Vector2 lhs, const Vector2 &rhs)
 		{
 			return lhs -= rhs;
 		}
 
-		friend Vector2f &operator*=(Vector2f &v, float scalar)
+		friend Vector2 &operator*=(Vector2 &v, T scalar)
 		{
 			v.x *= scalar;
 			v.y *= scalar;
 			return v;
 		}
 
-		friend Vector2f operator*(Vector2f v, float scalar)
+		friend Vector2 operator*(Vector2 v, T scalar)
 		{
 			return v *= scalar;
 		}
 
-		friend Vector2f operator*(float scalar, const Vector2f &v)
+		friend Vector2 operator*(T scalar, const Vector2 &v)
 		{
 			return v * scalar;
 		}
 
-		friend Vector2f operator-(const Vector2f &v)
+		friend Vector2 operator-(const Vector2 &v)
 		{
-			return Vector2f(-v.x, -v.y);
+			return Vector2(-v.x, -v.y);
 		}
 	};
+
+	typedef Vector2<float> Vector2f;
+	typedef Vector2<double> Vector2d;
 }
 
 #endif
