@@ -112,6 +112,25 @@ int main(int argc, char *argv[])
 		decltype(oldTime) newTime = oldTime + std::chrono::milliseconds(16);
 		decltype(newTime - oldTime) deltaTime;
 		decltype(deltaTime) accumulatedTime = std::chrono::milliseconds(0);
+
+		volatile bool threadShouldStop = false;
+		std::thread timingThread([&threadShouldStop]()
+		{
+			using std::chrono::high_resolution_clock;
+			using std::chrono::milliseconds;
+			auto nextEvent = high_resolution_clock::now() + milliseconds(7);
+
+			while (!threadShouldStop)
+			{
+				std::this_thread::sleep_for(milliseconds(1));
+				if (high_resolution_clock::now() > nextEvent)
+				{
+					nextEvent += milliseconds(7);
+					std::this_thread::yield();
+					glfwPostEmptyEvent();
+				}
+			}
+		});
 		while (!glfwWindowShouldClose(window))
 		{
 			using std::chrono::high_resolution_clock;
@@ -125,18 +144,18 @@ int main(int argc, char *argv[])
 			while (accumulatedTime.count() > 0)
 			{
 				auto timeStep = std::chrono::milliseconds(1000 / maxFrameRate);
-				std::this_thread::sleep_for(timeStep / 2);
 				accumulatedTime -= timeStep;
 				// logic(timeStep)
 			}
 			context.Clear().ColorBuffer();
 			context.DrawArrays(PrimitiveType::Triangles, 0, 3);
 			glfwSwapBuffers(window);
-			glfwPollEvents();
+			glfwWaitEvents();
 
 			newTime = high_resolution_clock::now();
 		}
-
+		threadShouldStop = true;
+		timingThread.join();
 		glfwTerminate();
 
 	}
