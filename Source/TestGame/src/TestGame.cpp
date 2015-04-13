@@ -1,4 +1,4 @@
-﻿/********************************************************************************
+/********************************************************************************
  │ 
  │  ╔═════════════╗
  │  ║EntitySystems║
@@ -64,21 +64,23 @@ int main(int argc, char *argv[])
 		Buffer vertices;
 		Buffer colors;
 		vs.Source("#version 330\n"
+			"uniform mat4 ProjectionMatrix;"
+			"uniform mat4 ModelMatrix;"
 			"in vec3 Position;"
 			"in vec3 Color;"
-			"out vec4 vertexColor;"
+			"out vec4 VertexColor;"
 			"void main(void)"
 			"{"
-			"	gl_Position = vec4(Position, 1.0);"
-			"   vertexColor = vec4(Color, 1.0);"
+			"	gl_Position = ProjectionMatrix * ModelMatrix * vec4(Position, 1.0);"
+			"   VertexColor = vec4(Color, 1.0);"
 			"}");
 
 		fs.Source("#version 330\n"
-			"in vec4 vertexColor;"
+			"in vec4 VertexColor;"
 			"out vec4 fragColor;"
 			"void main(void)"
 			"{"
-			"   fragColor = vertexColor;"
+			"   fragColor = VertexColor;"
 			"}");
 
 		vs.Compile();
@@ -109,6 +111,11 @@ int main(int argc, char *argv[])
 		}
 
 		program.Use();
+
+		Uniform<Mat4f> modelMatrixUniform(program, "ModelMatrix");
+		Uniform<Mat4f> projectionMatrixUniform(program, "ProjectionMatrix");
+		Mat4f modelMatrix, projectionMatrix;
+		projectionMatrix = CameraMatrix<float>::PerspectiveY(Anglef::Degrees(73.f), 1.f, 3, 100);
 		auto oldTime = std::chrono::high_resolution_clock::now();
 		decltype(oldTime) newTime = oldTime + std::chrono::milliseconds(16);
 		decltype(newTime - oldTime) deltaTime;
@@ -118,6 +125,7 @@ int main(int argc, char *argv[])
 		timer.Start();
 		while (!glfwWindowShouldClose(window))
 		{
+			static float x = 0;
 			const int timeStep = 70;
 			const int maxFrameRate = 160;
 
@@ -128,12 +136,18 @@ int main(int argc, char *argv[])
 			while (accumulatedTime.count() > 0)
 			{
 				accumulatedTime -= std::chrono::milliseconds(timeStep);
+				x += 1.0 / timeStep;
 				// logic(timeStep)
 			}
+			
 			context.Clear().ColorBuffer();
+			modelMatrixUniform.Set(modelMatrix * ModelMatrix<float>::Translation(x, 0, -3));
+			projectionMatrixUniform.Set(projectionMatrix);
 			context.DrawArrays(PrimitiveType::Triangles, 0, 3);
 			glfwSwapBuffers(window);
 			glfwWaitEvents();
+
+			newTime = std::chrono::high_resolution_clock::now();
 		}
 		timer.Stop();
 		glfwTerminate();
