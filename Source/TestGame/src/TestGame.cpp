@@ -31,10 +31,11 @@
 
 #include <ES/System.h>
 #include <Game/DumbEnemySystem.h>
+#include <Game/Timer.h>
+
 #include <iostream>
 #include <typeinfo>
 #include <chrono>
-#include <thread>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -113,28 +114,11 @@ int main(int argc, char *argv[])
 		decltype(newTime - oldTime) deltaTime;
 		decltype(deltaTime) accumulatedTime = std::chrono::milliseconds(0);
 
-		volatile bool threadShouldStop = false;
-		std::thread timingThread([&threadShouldStop]()
-		{
-			using std::chrono::high_resolution_clock;
-			using std::chrono::milliseconds;
-			auto nextEvent = high_resolution_clock::now() + milliseconds(7);
-
-			while (!threadShouldStop)
-			{
-				std::this_thread::sleep_for(milliseconds(1));
-				if (high_resolution_clock::now() > nextEvent)
-				{
-					nextEvent += milliseconds(7);
-					std::this_thread::yield();
-					glfwPostEmptyEvent();
-				}
-			}
-		});
+		game::Timer timer(150);
+		timer.Start();
 		while (!glfwWindowShouldClose(window))
 		{
-			using std::chrono::high_resolution_clock;
-			using std::chrono::milliseconds;
+			const int timeStep = 70;
 			const int maxFrameRate = 160;
 
 			deltaTime = newTime - oldTime;
@@ -143,19 +127,15 @@ int main(int argc, char *argv[])
 			
 			while (accumulatedTime.count() > 0)
 			{
-				auto timeStep = std::chrono::milliseconds(1000 / maxFrameRate);
-				accumulatedTime -= timeStep;
+				accumulatedTime -= std::chrono::milliseconds(timeStep);
 				// logic(timeStep)
 			}
 			context.Clear().ColorBuffer();
 			context.DrawArrays(PrimitiveType::Triangles, 0, 3);
 			glfwSwapBuffers(window);
 			glfwWaitEvents();
-
-			newTime = high_resolution_clock::now();
 		}
-		threadShouldStop = true;
-		timingThread.join();
+		timer.Stop();
 		glfwTerminate();
 
 	}
