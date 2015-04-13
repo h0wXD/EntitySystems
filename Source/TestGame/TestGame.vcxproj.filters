@@ -23,9 +23,6 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="include\Game\Vector2f.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="include\Game\DumbEnemySystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
@@ -33,6 +30,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="include\Game\ILogic.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Game\Vector2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

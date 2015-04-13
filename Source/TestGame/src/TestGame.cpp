@@ -32,9 +32,120 @@
 #include <ES/System.h>
 #include <Game/DumbEnemySystem.h>
 #include <iostream>
+#include <typeinfo>
+#include <chrono>
+#include <thread>
+
+#include <GL/glew.h>
+#include <GLFW/glfw3.h>
+#include <oglplus/gl.hpp>
+#include <oglplus/all.hpp>
 
 int main(int argc, char *argv[])
 {
+	using namespace oglplus;
+
+	glewExperimental = GL_TRUE;
+	glfwInit();
+	
+	GLFWwindow *window = glfwCreateWindow(400, 400, "Test", nullptr, nullptr);
+	glfwMakeContextCurrent(window);
+	glewInit();
+	//glGetError();
+	
+	try
+	{
+		Context context;
+		VertexShader vs;
+		FragmentShader fs;
+		Program program;
+		VertexArray triangle;
+		Buffer vertices;
+		Buffer colors;
+		vs.Source("#version 330\n"
+			"in vec3 Position;"
+			"in vec3 Color;"
+			"out vec4 vertexColor;"
+			"void main(void)"
+			"{"
+			"	gl_Position = vec4(Position, 1.0);"
+			"   vertexColor = vec4(Color, 1.0);"
+			"}");
+
+		fs.Source("#version 330\n"
+			"in vec4 vertexColor;"
+			"out vec4 fragColor;"
+			"void main(void)"
+			"{"
+			"   fragColor = vertexColor;"
+			"}");
+
+		vs.Compile();
+		fs.Compile();
+		program.AttachShader(vs);
+		program.AttachShader(fs);
+		program.Link();
+
+		triangle.Bind();
+		{
+			GLfloat triangle_verts[9] = {
+				0.0f, 0.0f, 0.0f,
+				1.0f, 0.0f, 0.0f,
+				0.0f, 1.0f, 0.0f
+			};
+			vertices.Bind(Buffer::Target::Array);
+			Buffer::Data(Buffer::Target::Array, 9, triangle_verts);
+			VertexArrayAttrib(program, "Position").Setup<GLfloat>(3).Enable();
+
+			GLfloat triangle_colors[9] = {
+				1.0f, 0.0f, 0.0f,
+				0.0f, 1.0f, 0.0f,
+				0.0f, 0.0f, 1.0f
+			};
+			colors.Bind(Buffer::Target::Array);
+			Buffer::Data(Buffer::Target::Array, 9, triangle_colors);
+			VertexArrayAttrib(program, "Color").Setup<GLfloat>(3).Enable();
+		}
+
+		program.Use();
+		auto oldTime = std::chrono::high_resolution_clock::now();
+		decltype(oldTime) newTime = oldTime + std::chrono::milliseconds(16);
+		decltype(newTime - oldTime) deltaTime;
+		decltype(deltaTime) accumulatedTime = std::chrono::milliseconds(0);
+		while (!glfwWindowShouldClose(window))
+		{
+			using std::chrono::high_resolution_clock;
+			using std::chrono::milliseconds;
+			const int maxFrameRate = 160;
+
+			deltaTime = newTime - oldTime;
+			accumulatedTime += deltaTime;
+			oldTime = newTime;
+			
+			while (accumulatedTime.count() > 0)
+			{
+				auto timeStep = std::chrono::milliseconds(1000 / maxFrameRate);
+				std::this_thread::sleep_for(timeStep / 2);
+				accumulatedTime -= timeStep;
+				// logic(timeStep)
+			}
+			context.Clear().ColorBuffer();
+			context.DrawArrays(PrimitiveType::Triangles, 0, 3);
+			glfwSwapBuffers(window);
+			glfwPollEvents();
+
+			newTime = high_resolution_clock::now();
+		}
+
+		glfwTerminate();
+
+	}
+	catch (Error &e)
+	{
+		std::cerr << e.what() << '\n' << e.Log() << std::endl;
+	}
+	
+
 	game::DumbEnemySystem system(100);
 	
 	{
@@ -48,9 +159,8 @@ int main(int argc, char *argv[])
 		auto instance = system.GetInstance(reference);
 		instance.Health() = -0.5f;
 	}
-
+	
 	system.Tick(0.16f);
-	std::cin.peek();
 	return 0;
 }
 
