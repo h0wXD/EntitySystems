@@ -35,17 +35,17 @@
 
 namespace game
 {
-	void Timer::_threadMethod(Timer *t)
+	void Timer::_threadMethod()
 	{
 		using std::chrono::high_resolution_clock;
 		using std::chrono::microseconds;
-		auto nextEventTime = high_resolution_clock::now() + microseconds(1000000 / t->_tickRate);
-		while (!t->ShouldStop())
+		auto nextEventTime = high_resolution_clock::now() + microseconds(1000000 / _tickRate);
+		while (!ShouldStop())
 		{
 			std::this_thread::sleep_for(microseconds(2000));
 			if (high_resolution_clock::now() > nextEventTime)
 			{
-				nextEventTime += microseconds(1000000 / t->_tickRate);
+				nextEventTime += microseconds(1000000 / _tickRate);
 				glfwPostEmptyEvent();
 				std::this_thread::yield();
 			}
@@ -55,7 +55,7 @@ namespace game
 	void Timer::Start()
 	{
 		_stopSet.reset(); // Set all to false
-		_thread = std::thread(_threadMethod, this);
+		_thread = std::thread(&Timer::_threadMethod, this);
 	}
 
 	void Timer::Stop()

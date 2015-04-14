@@ -48,7 +48,7 @@ namespace game
 		static const int _SHOULD_STOP = 0;
 		static const int _IS_STOPPED = 1;
 		
-		static void _threadMethod(Timer *t);
+		void _threadMethod();
 		std::thread _thread;
 
 		inline bool ShouldStop()
