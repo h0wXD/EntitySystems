@@ -148,6 +148,7 @@
   <ItemGroup>
     <ClInclude Include="include\Game\DumbEnemySystem.h" />
     <ClInclude Include="include\Game\ILogic.h" />
+    <ClInclude Include="include\Game\SimpleBulletSystem.h" />
     <ClInclude Include="include\Game\SimpleMovementManager.h" />
     <ClInclude Include="include\Game\Timer.h" />
     <ClInclude Include="include\Game\Vector2.h" />

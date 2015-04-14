@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
 {
 	using namespace oglplus;
 
-	glewExperimental = GL_TRUE;
+	//glewExperimental = GL_TRUE;
 	glfwInit();
 	
 	GLFWwindow *window = glfwCreateWindow(400, 400, "Test", nullptr, nullptr);
@@ -63,6 +63,8 @@ int main(int argc, char *argv[])
 		VertexArray triangle;
 		Buffer vertices;
 		Buffer colors;
+
+		context.Enable(oglplus::enums::Capability::DepthTest);
 		vs.Source("#version 330\n"
 			"uniform mat4 ProjectionMatrix;"
 			"uniform mat4 ModelMatrix;"
@@ -115,7 +117,8 @@ int main(int argc, char *argv[])
 		Uniform<Mat4f> modelMatrixUniform(program, "ModelMatrix");
 		Uniform<Mat4f> projectionMatrixUniform(program, "ProjectionMatrix");
 		Mat4f modelMatrix, projectionMatrix;
-		projectionMatrix = CameraMatrix<float>::PerspectiveY(Anglef::Degrees(73.f), 1.f, 3, 100);
+		projectionMatrix = CameraMatrix<float>::Ortho(-1, 1, -1, 1, -1, 1);
+		//projectionMatrix = CameraMatrix<float>::PerspectiveY(Anglef::Degrees(73.f), 1.f, 3, 100);
 		auto oldTime = std::chrono::high_resolution_clock::now();
 		decltype(oldTime) newTime = oldTime + std::chrono::milliseconds(16);
 		decltype(newTime - oldTime) deltaTime;
@@ -136,14 +139,19 @@ int main(int argc, char *argv[])
 			while (accumulatedTime.count() > 0)
 			{
 				accumulatedTime -= std::chrono::milliseconds(timeStep);
-				x += 1.0 / timeStep;
+				x += 1.f / timeStep;
 				// logic(timeStep)
 			}
-			
-			context.Clear().ColorBuffer();
-			modelMatrixUniform.Set(modelMatrix * ModelMatrix<float>::Translation(x, 0, -3));
+
+			context.Clear().ColorBuffer().DepthBuffer();
+			modelMatrixUniform.Set(modelMatrix * ModelMatrix<float>::Translation(x, 0, 0.1));
 			projectionMatrixUniform.Set(projectionMatrix);
 			context.DrawArrays(PrimitiveType::Triangles, 0, 3);
+
+			modelMatrixUniform.Set(modelMatrix * ModelMatrix<float>::Translation(x + 0.1f, -0.5f, 0.0));
+			projectionMatrixUniform.Set(projectionMatrix);
+			context.DrawArrays(PrimitiveType::Triangles, 0, 3);
+
 			glfwSwapBuffers(window);
 			glfwWaitEvents();
 

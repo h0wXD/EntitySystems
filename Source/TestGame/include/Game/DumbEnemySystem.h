@@ -42,9 +42,9 @@
 namespace game
 {
 
-	/**********************************
-	 * Dumb Enemy instance definition *
-	 **********************************/
+	/***********************************
+	 * Dumb Enemy instance declaration *
+	 ***********************************/
 
 	/**
 	 * @brief OO-like class to handle Dumb enemies
