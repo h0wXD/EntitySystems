@@ -1,6 +1,8 @@
 ## Experimental Entity (Component) System
 
-Written in C++.
+Written in C++.  
+**Very early in development stages**
+*****
 
 ### Introduction
 
@@ -32,14 +34,17 @@ This project makes heavy use of templates, compilation time will probably not be
 
 ### Building EntitySystems
 
+*Needs to be updated.*  
+*Depends on glew and glfw.*
+
 #### Windows
 
 Microsoft Visual Studio 2013 or up is required for C++11 support. (Tested with 2013)
 
 1. Download and install CMake version 3.2.1 or higher. http://www.cmake.org/
 2. Open CMake and configure the directories:
-* Source Code: EntitySystems
-* Binaries: EntitySystems/Build
+  * Source Code: EntitySystems
+  * Binaries: EntitySystems/Build
 3. Configure and select MSMicroso Visual Studio
 4. Generate
 5. Go to the binaries folder and open the generated Solution file.
