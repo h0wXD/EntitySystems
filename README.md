@@ -51,22 +51,14 @@ Latest GNU C Compiler or up is required for C++11 support. (Tested with 4.8.2)
 1. cmake -DCMAKE_BUILD_TYPE=Release ..
 1. make
 
-#### Building CMake on Linux
-1. Get the Unix/Linux Source download link. http://www.cmake.org/download/
-1. wget http://www.cmake.org/files/v3.2/cmake-3.2.1.tar.gz
-1. tar -xzvf cmake-3.2.1.tar.gz
-1. cd cmake-3.2.1
-1. ./bootstrap
-1. make && sudo make install
-
 ## Building TestGame with EntitySystems
 ### Windows
 1. Open the folder EntitySystems/Lib.
 1. Download and unzip glew (zip). http://glew.sourceforge.net/
-1. Clone glfw (git clone). https://github.com/glfw/glfw
+1. Download and unzip glfw (zip). https://github.com/glfw/glfw/releases
 1. Download and unzip oglplus. http://oglplus.org/
 1. Make sure you have a similar directory structure:
-  * Lib\  
+  * Lib\
       * glew-1.12.0  
       * glfw-3.1.1  
       * oglplus-0.60.0
@@ -103,4 +95,6 @@ Latest GNU C Compiler or up is required for C++11 support. (Tested with 4.8.2)
 1. Build.
 
 ##### Linux
-1. TODO
+1. mkdir build && cd build
+1. cmake ..
+1. make && sudo make install
