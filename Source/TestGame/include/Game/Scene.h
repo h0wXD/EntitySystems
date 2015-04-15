@@ -29,49 +29,117 @@
  ********************************************************************************/
 
 
-#ifndef GAME_TIMER_H
-#define GAME_TIMER_H
+#ifndef GAME_SCENE_H
+#define GAME_SCENE_H
 
-#include <bitset>
-#include <functional>
+#include <Game/Timer.h>
+#include <Game/RenderingSystem.h>
+
+#include <cstddef>
 #include <thread>
+#include <condition_variable>
+#include <bitset>
+#include <memory>
 
 namespace game
 {
-	/**
-	 * @brief Generates empty events for GLFW
-	 */
-	class Timer
-	{
-		int _tickRate;
-		std::bitset<2> _stopSet;
-		static const int _SHOULD_STOP = 0;
-		static const int _IS_STOPPED = 1;
-		
-		void _threadMethod();
-		std::thread _thread;
 
-		inline bool ShouldStop();
-		inline bool IsStopped();
+	/*********************
+	 * Scene declaration *
+	 *******************************************************
+	  Inline methods implemented at the bottom of this file 
+	 *******************************************************/
+
+	class Scene
+	{
+		enum : std::size_t
+		{
+			_SHOULD_STOP,
+			_IS_STOPPED,
+			_IS_READY_TO_SYNC,
+			_IS_READY_TO_RESUME,
+			_FLAG_COUNT
+		};
+		std::bitset<_FLAG_COUNT> _flags;
+
+		std::condition_variable _synchronizeThreads;
+		std::thread _logicThread;
+		std::mutex _mutex;
+		void _logicMethod();
+
+		Timer _timer;
+
+		inline bool IsStopped() const;
+		inline bool ShouldStop() const;
+		inline bool IsReadyToSync() const;
+		inline bool IsReadyToResume() const;
+
+		inline void SetStopped(bool v = true);
+		inline void SetShouldStop(bool v = true);
+		inline void SetReadyToSync(bool v = true);
+		inline void SetReadyToResume(bool v = true);
+
+		std::unique_ptr<RenderingSystem> _renderingSystem;
 
 	public:
-		Timer(int tickRate) : _tickRate(tickRate) 
-		{ 
-			_stopSet.set(_IS_STOPPED);
-		}
-		void Start();
-		void Stop();
-		~Timer();
+		Scene();
+		~Scene();
+
+		void StartLogicThread();
+		void StopLogicThread();
+		void LockToSyncThreads();
+
+		void Render();
 	};
 
-	bool Timer::ShouldStop()
+	/*******************************
+	 * Scene inline helper methods *
+	 *******************************/
+
+	/*
+	 =Getters=
+	*/
+	bool Scene::IsStopped() const
 	{
-		return _stopSet.at(_SHOULD_STOP);
+		return _flags.at(_IS_STOPPED);
 	}
 
-	bool Timer::IsStopped()
+	bool Scene::ShouldStop() const
 	{
-		return _stopSet.at(_IS_STOPPED);
+		return _flags.at(_SHOULD_STOP);
+	}
+
+	bool Scene::IsReadyToSync() const
+	{
+		return _flags.at(_IS_READY_TO_SYNC);
+	}
+
+	bool Scene::IsReadyToResume() const
+	{
+		return _flags.at(_IS_READY_TO_RESUME);
+	}
+
+	/*
+	 =Setters=
+	*/
+	void Scene::SetReadyToResume(bool v)
+	{
+		_flags.set(_IS_READY_TO_RESUME, v);
+	}
+
+	void Scene::SetReadyToSync(bool v)
+	{
+		_flags.set(_IS_READY_TO_SYNC, v);
+	}
+
+	void Scene::SetShouldStop(bool v)
+	{
+		_flags.set(_SHOULD_STOP, v);
+	}
+
+	void Scene::SetStopped(bool v)
+	{
+		_flags.set(_IS_STOPPED, v);
 	}
 
 }

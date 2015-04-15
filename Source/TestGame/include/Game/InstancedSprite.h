@@ -29,51 +29,49 @@
  ********************************************************************************/
 
 
-#ifndef GAME_TIMER_H
-#define GAME_TIMER_H
+#ifndef GAME_INSTANCED_SPRITE
+#define GAME_INSTANCED_SPRITE
 
-#include <bitset>
-#include <functional>
-#include <thread>
+#include <ES/disarray.h>
+#include <Game/Vector2.h>
+#include <algorithm>
+#include <tuple>
+#include <limits>
 
 namespace game
 {
-	/**
-	 * @brief Generates empty events for GLFW
-	 */
-	class Timer
+	class InstancedSprite
 	{
-		int _tickRate;
-		std::bitset<2> _stopSet;
-		static const int _SHOULD_STOP = 0;
-		static const int _IS_STOPPED = 1;
-		
-		void _threadMethod();
-		std::thread _thread;
+		friend class RenderingSystem;
+		friend class RenderingLayer;
+		es::disarray<Vector2f> _positionArray;
+		es::disarray<float>	_depthArray;
+		std::uint16_t _elementCount;
 
-		inline bool ShouldStop();
-		inline bool IsStopped();
+		void Sort()
+		{
+			std::uint16_t i = _elementCount;
+			auto lowest = _positionArray.begin();
+			while (i > 0)
+			{
+				--i;
+				auto it = std::min_element(_depthArray.begin(), _depthArray.begin() + i);
+				int distance = it - _depthArray.begin();
+				std::iter_swap(lowest, _positionArray.begin() + distance);
+				_depthArray[distance] = std::numeric_limits<float>::infinity();
+			}
+		}
+
+		void Draw()
+		{
+
+		}
 
 	public:
-		Timer(int tickRate) : _tickRate(tickRate) 
-		{ 
-			_stopSet.set(_IS_STOPPED);
-		}
-		void Start();
-		void Stop();
-		~Timer();
+		InstancedSprite() { }
+		~InstancedSprite() { }
+
 	};
-
-	bool Timer::ShouldStop()
-	{
-		return _stopSet.at(_SHOULD_STOP);
-	}
-
-	bool Timer::IsStopped()
-	{
-		return _stopSet.at(_IS_STOPPED);
-	}
-
 }
 
 #endif

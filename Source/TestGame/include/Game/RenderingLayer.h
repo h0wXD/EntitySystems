@@ -1,4 +1,4 @@
-/********************************************************************************
+﻿/********************************************************************************
  │ 
  │  ╔═════════════╗
  │  ║EntitySystems║
@@ -29,51 +29,73 @@
  ********************************************************************************/
 
 
-#ifndef GAME_TIMER_H
-#define GAME_TIMER_H
+#ifndef GAME_RENDERING_LAYER_H
+#define GAME_RENDERING_LAYER_H
 
-#include <bitset>
-#include <functional>
-#include <thread>
+#include <ES/disarray.h>
+#include <Game/InstancedSprite.h>
 
 namespace game
 {
-	/**
-	 * @brief Generates empty events for GLFW
-	 */
-	class Timer
+	
+	class RenderingSystem;
+	class RenderingLayer
 	{
-		int _tickRate;
-		std::bitset<2> _stopSet;
-		static const int _SHOULD_STOP = 0;
-		static const int _IS_STOPPED = 1;
-		
-		void _threadMethod();
-		std::thread _thread;
+		friend class RenderingSystem;
 
-		inline bool ShouldStop();
-		inline bool IsStopped();
+		RenderingSystem *_system;
+		std::uint16_t _opaqueSpriteCount;
+		es::disarray<InstancedSprite> _opaqueSpriteArray;
+		std::uint16_t _transparentSpriteCount;
+		es::disarray<InstancedSprite> _transparentSpriteArray;
 
 	public:
-		Timer(int tickRate) : _tickRate(tickRate) 
-		{ 
-			_stopSet.set(_IS_STOPPED);
+		RenderingLayer() :
+			_opaqueSpriteCount(0),
+			_transparentSpriteCount(0),
+			_opaqueSpriteArray(255),
+			_transparentSpriteArray(255) { }
+
+	private:
+		void Sort()
+		{
+			auto transparent = _transparentSpriteArray.data();
+			std::uint16_t count = _transparentSpriteCount;
+
+			while (count > 0)
+			{
+				--count;
+				transparent->Sort();
+				++transparent;
+			}
 		}
-		void Start();
-		void Stop();
-		~Timer();
+
+		void Render()
+		{
+			std::uint16_t opaqueCount = _opaqueSpriteCount;
+			auto opaque = _opaqueSpriteArray.data();
+			std::uint16_t transparentCount = _transparentSpriteCount;
+			auto transparent = _transparentSpriteArray.data();
+
+			while (opaqueCount > 0)
+			{
+				--opaqueCount;
+				opaque->Draw();
+				++opaque;
+			}
+
+			while (transparentCount > 0)
+			{
+				--transparentCount;
+				transparent->Draw();
+				++transparent;
+			}
+		}
+	public:
+		~RenderingLayer() { }
+
 	};
-
-	bool Timer::ShouldStop()
-	{
-		return _stopSet.at(_SHOULD_STOP);
-	}
-
-	bool Timer::IsStopped()
-	{
-		return _stopSet.at(_IS_STOPPED);
-	}
-
 }
+
 
 #endif

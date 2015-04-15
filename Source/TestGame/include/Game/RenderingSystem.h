@@ -29,51 +29,75 @@
  ********************************************************************************/
 
 
-#ifndef GAME_TIMER_H
-#define GAME_TIMER_H
+#ifndef GAME_RENDERING_SYSTEM_H
+#define GAME_RENDERING_SYSTEM_H
 
-#include <bitset>
-#include <functional>
-#include <thread>
+#include <Game/SpriteDrawCommand.h>
+#include <Game/RenderingLayer.h>
+#include <ES/System.h>
+
+#include <array>
+#include <string>
 
 namespace game
 {
-	/**
-	 * @brief Generates empty events for GLFW
-	 */
-	class Timer
+	
+	class RenderingSystem : es::System
 	{
-		int _tickRate;
-		std::bitset<2> _stopSet;
-		static const int _SHOULD_STOP = 0;
-		static const int _IS_STOPPED = 1;
-		
-		void _threadMethod();
-		std::thread _thread;
-
-		inline bool ShouldStop();
-		inline bool IsStopped();
+	public:
+		enum
+		{
+			BACKGROUND,
+			MIDDLE,
+			FOREGROUND,
+			LAYER_COUNT
+		};
+	private:
+		std::array<RenderingLayer, LAYER_COUNT> _renderingLayers;
+		es::disarray<SpriteDrawCommand> _commands;
+		std::uint16_t _commandCount;
 
 	public:
-		Timer(int tickRate) : _tickRate(tickRate) 
-		{ 
-			_stopSet.set(_IS_STOPPED);
+		RenderingSystem()
+		{
+			for (auto &layer : _renderingLayers)
+			{
+				layer._system = this;
+			}
+			_commandCount = 0;
+			_commands.Allocate(255);
 		}
-		void Start();
-		void Stop();
-		~Timer();
+		Handle LoadTexture(const std::string &path);
+
+		void Render() 
+		{
+			for (auto &layer : _renderingLayers)
+			{
+				layer.Sort();
+			}
+
+			for (auto &layer : _renderingLayers)
+			{
+				layer.Render();
+			}
+		}
+		void HandleCommands()
+		{
+			for (auto layer : _renderingLayers)
+			{
+				layer._opaqueSpriteCount = 0;
+				layer._transparentSpriteCount = 0;
+			}
+
+			SpriteDrawCommand *command = nullptr;
+			for (std::uint16_t i = 0; i < _commandCount; ++i, ++command)
+			{
+				
+			}
+		}
+
+		~RenderingSystem() { }
 	};
-
-	bool Timer::ShouldStop()
-	{
-		return _stopSet.at(_SHOULD_STOP);
-	}
-
-	bool Timer::IsStopped()
-	{
-		return _stopSet.at(_IS_STOPPED);
-	}
-
 }
 
 #endif

@@ -1,4 +1,4 @@
-/********************************************************************************
+﻿/********************************************************************************
  │ 
  │  ╔═════════════╗
  │  ║EntitySystems║
@@ -29,51 +29,86 @@
  ********************************************************************************/
 
 
-#ifndef GAME_TIMER_H
-#define GAME_TIMER_H
-
-#include <bitset>
-#include <functional>
-#include <thread>
+#include <Game/Scene.h>
+#include <chrono>
 
 namespace game
 {
-	/**
-	 * @brief Generates empty events for GLFW
-	 */
-	class Timer
+
+	Scene::Scene() : _timer(200), _renderingSystem(new RenderingSystem())
 	{
-		int _tickRate;
-		std::bitset<2> _stopSet;
-		static const int _SHOULD_STOP = 0;
-		static const int _IS_STOPPED = 1;
-		
-		void _threadMethod();
-		std::thread _thread;
+		_flags.set(_IS_STOPPED);
+	}
 
-		inline bool ShouldStop();
-		inline bool IsStopped();
-
-	public:
-		Timer(int tickRate) : _tickRate(tickRate) 
-		{ 
-			_stopSet.set(_IS_STOPPED);
+	Scene::~Scene()
+	{
+		if (!IsStopped())
+		{
+			StopLogicThread();
 		}
-		void Start();
-		void Stop();
-		~Timer();
-	};
-
-	bool Timer::ShouldStop()
-	{
-		return _stopSet.at(_SHOULD_STOP);
 	}
 
-	bool Timer::IsStopped()
+	void Scene::_logicMethod()
 	{
-		return _stopSet.at(_IS_STOPPED);
+		using std::chrono::microseconds;
+		using std::chrono::high_resolution_clock;
+
+		high_resolution_clock::duration timeStepDuration = microseconds(1000000 / 200);
+		float timeStepFloat = 1.f / 200.f;
+		auto oldTime = high_resolution_clock::now();
+		auto newTime = oldTime + timeStepDuration;
+		high_resolution_clock::rep accumulatedTime = 0;
+
+		while (!ShouldStop())
+		{
+			auto deltaTime = newTime - oldTime;
+			oldTime = newTime;
+			accumulatedTime += deltaTime.count();
+
+			while (accumulatedTime > 0)
+			{
+				accumulatedTime -= timeStepDuration.count();
+				// Do logic
+				// Logic(timeStepFloat);
+			}
+
+			SetReadyToSync();
+			_synchronizeThreads.notify_one();
+			{
+				std::unique_lock<std::mutex> lock(_mutex);
+				_synchronizeThreads.wait(lock, [this] { return IsReadyToResume(); });
+			}
+			newTime = high_resolution_clock::now();
+		}
 	}
 
+	void Scene::Render()
+	{
+		_renderingSystem->Render();
+	}
+
+	void Scene::StartLogicThread()
+	{
+		_timer.Start();
+		_logicThread = std::thread(&Scene::_logicMethod, this);
+	}
+
+	void Scene::StopLogicThread()
+	{
+		SetShouldStop();
+		_logicThread.join();
+		_timer.Stop();
+		SetStopped();
+	}
+
+	void Scene::LockToSyncThreads()
+	{
+		{
+			std::unique_lock<std::mutex> lock(_mutex);
+			_synchronizeThreads.wait(lock, [this] { return IsReadyToSync(); });
+			//_renderingSystem->HandleCommands();
+			SetReadyToResume();
+		}
+		_synchronizeThreads.notify_one();
+	}
 }
-
-#endif

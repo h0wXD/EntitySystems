@@ -1,4 +1,4 @@
-﻿/********************************************************************************
+/********************************************************************************
  │ 
  │  ╔═════════════╗
  │  ║EntitySystems║
@@ -28,14 +28,17 @@
    THE SOFTWARE.                                                                
  ********************************************************************************/
 
+
 #ifndef GAME_SIMPLE_BULLET_SYSTEM_H
 #define GAME_SIMPLE_BULLET_SYSTEM_H
 
 #include <ES/System.h>
 #include <ES/disarray.h>
+#include <ES/for_each_where.h>
 
 #include <Game/ILogic.h>
 #include <Game/Vector2.h>
+#include <Game/SimpleMovementManager.h>
 
 namespace game
 {
@@ -68,11 +71,42 @@ namespace game
 		es::disarray<Vector2f> _directionArray;
 
 	public:
+		SimpleBulletSystem(std::uint16_t size) : 
+			_positionArray(size), 
+			_directionArray(size), 
+			System() { }
+
 		es::System::Handle Add()
 		{
 			Handle handle = CreateHandle();
 			IncreaseElementCount();
 			return handle;
+		}
+
+		void Tick(float deltaTime)
+		{
+			std::uint16_t toRemove[255];
+			SimpleMovementManager::Process(&_positionArray, &_directionArray, _elementCount, deltaTime);
+
+			auto OutOfBounds = [](const Vector2f &pos)
+			{
+				float x = ::abs(pos.x);
+				float y = ::abs(pos.y);
+
+				return x > 2 || y > 2;
+			};
+			int count = 0;
+			auto AddToRemove = [&count, &toRemove](int i)
+			{
+				toRemove[count] = i;
+				count++;
+			};
+			es::for_where_n(_positionArray.begin(), _elementCount, OutOfBounds, AddToRemove);
+			while (count > 0)
+			{
+				--count;
+				System::Remove(toRemove[count], count, _positionArray, _directionArray);
+			}
 		}
 
 		SimpleBulletInstance GetInstance(Handle handle)

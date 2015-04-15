@@ -1,4 +1,4 @@
-﻿/********************************************************************************
+/********************************************************************************
  │ 
  │  ╔═════════════╗
  │  ║EntitySystems║
@@ -166,9 +166,21 @@ namespace game
 			return v;
 		}
 
+		friend Vector2 &operator/=(Vector2 &v, T scalar)
+		{
+			v.x /= scalar;
+			v.y /= scalar;
+			return v;
+		}
+
 		friend Vector2 operator*(Vector2 v, T scalar)
 		{
 			return v *= scalar;
+		}
+
+		friend Vector2 operator/(Vector2 v, T scalar)
+		{
+			return v /= scalar;
 		}
 
 		friend Vector2 operator*(T scalar, const Vector2 &v)

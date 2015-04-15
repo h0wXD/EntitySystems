@@ -1,4 +1,4 @@
-/********************************************************************************
+﻿/********************************************************************************
  │ 
  │  ╔═════════════╗
  │  ║EntitySystems║
@@ -29,51 +29,29 @@
  ********************************************************************************/
 
 
-#ifndef GAME_TIMER_H
-#define GAME_TIMER_H
+#ifndef GAME_SPRITE_DRAW_COMMAND_H
+#define GAME_SPRITE_DRAW_COMMAND_H
 
-#include <bitset>
-#include <functional>
-#include <thread>
+#include <Game/Vector2.h>
+#include <ES/disarray.h>
+#include <ES/System.h>
+#include <cstddef>
 
 namespace game
 {
-	/**
-	 * @brief Generates empty events for GLFW
-	 */
-	class Timer
+	
+	struct SpriteDrawCommand
 	{
-		int _tickRate;
-		std::bitset<2> _stopSet;
-		static const int _SHOULD_STOP = 0;
-		static const int _IS_STOPPED = 1;
-		
-		void _threadMethod();
-		std::thread _thread;
-
-		inline bool ShouldStop();
-		inline bool IsStopped();
-
-	public:
-		Timer(int tickRate) : _tickRate(tickRate) 
-		{ 
-			_stopSet.set(_IS_STOPPED);
-		}
-		void Start();
-		void Stop();
-		~Timer();
+		es::disarray<Vector2f> *PositionArray;
+		es::disarray<float> *Depth;
+		std::uint8_t Layer;
+		std::uint8_t Sprite;
+		std::uint16_t ElementCount;
+		float OffsetX;
+		float OffsetY;
+		float Width;
+		float Height;
 	};
-
-	bool Timer::ShouldStop()
-	{
-		return _stopSet.at(_SHOULD_STOP);
-	}
-
-	bool Timer::IsStopped()
-	{
-		return _stopSet.at(_IS_STOPPED);
-	}
-
 }
 
 #endif

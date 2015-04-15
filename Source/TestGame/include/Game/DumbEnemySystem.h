@@ -44,7 +44,9 @@ namespace game
 
 	/***********************************
 	 * Dumb Enemy instance declaration *
-	 ***********************************/
+	 ***********************************
+	  Implementation below 
+	 **********************/
 
 	/**
 	 * @brief OO-like class to handle Dumb enemies
@@ -59,9 +61,9 @@ namespace game
 
 		DumbEnemyInstance(DumbEnemySystem *system, es::System::Handle handle) : _system(system), _handle(handle) { }
 	public:
-		float &Health();
-		Vector2f &Position();
-		Vector2f &Direction();
+		inline float &Health();
+		inline Vector2f &Position();
+		inline Vector2f &Direction();
 	};
 
 	/*********************
@@ -141,5 +143,6 @@ namespace game
 	{
 		return _system->_direction[_handle.GetId()];
 	}
+
 }
 #endif

@@ -1,4 +1,4 @@
-﻿/********************************************************************************
+/********************************************************************************
  │ 
  │  ╔═════════════╗
  │  ║EntitySystems║
@@ -35,6 +35,7 @@
 #include <cstddef>
 #include <cstdint>
 #include <iterator>
+#include <cstdlib>
 
 namespace es
 {
@@ -67,7 +68,7 @@ namespace es
 
 		~disarray()
 		{
-			if (!(_size >> 15))
+			if (!(_size >> 15) && _data)
 			{
 				delete[] _data;
 			}
