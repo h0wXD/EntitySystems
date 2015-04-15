@@ -34,18 +34,18 @@ This project makes heavy use of templates, compilation time will probably not be
 
 ### Building EntitySystems
 
-*Needs to be updated.*  
-*Depends on glew and glfw.*
+Download and install CMake version 2.6 or higher. http://www.cmake.org/
+There's a guide below on how to build CMake on Linux if necessary.
 
 #### Windows
 
 Microsoft Visual Studio 2013 or up is required for C++11 support. (Tested with 2013)
 
-1. Download and install CMake version 3.2.1 or higher. http://www.cmake.org/
-2. Open CMake and configure the directories:
+1. Open CMake and configure the directories:
   * Source Code: EntitySystems
   * Binaries: EntitySystems/Build
-3. Configure and select MSMicroso Visual Studio
+2. Configure and select Microsoft Visual Studio
+3. Uncheck BUILD_TEST_GAME.
 4. Generate
 5. Go to the binaries folder and open the generated Solution file.
 6. Build.
@@ -54,12 +54,11 @@ Microsoft Visual Studio 2013 or up is required for C++11 support. (Tested with 2
 
 Latest GNU C Compiler or up is required for C++11 support. (Tested with 4.8.2)
 
-1. Download and install CMake 3.2.1 or higher. (see below)
-2. git clone https://github.com/h0wXD/EntitySystems.git
-3. cd EntitySystems
-4. mkdir build && cd build
-5. cmake -DCMAKE_BUILD_TYPE=Release ..
-6. make
+1. git clone https://github.com/h0wXD/EntitySystems.git
+2. cd EntitySystems
+3. mkdir build && cd build
+4. cmake -DCMAKE_BUILD_TYPE=Release ..
+5. make
 
 ##### Building CMake on Linux
 1. Get the Unix/Linux Source download link. http://www.cmake.org/download/
@@ -68,3 +67,57 @@ Latest GNU C Compiler or up is required for C++11 support. (Tested with 4.8.2)
 4. cd cmake-3.2.1
 5. ./bootstrap
 6. make && sudo make install
+
+### Building TestGame with EntitySystems
+
+#### Windows
+
+1. Open the folder EntitySystems/Lib.
+2. Download and unzip glew (zip). http://glew.sourceforge.net/
+3. Clone glfw (git clone). https://github.com/glfw/glfw
+4. Download and unzip oglplus. http://oglplus.org/
+5. Make sure you have a similar directory structure:
+  * Lib\
+  ***** glew-1.12.0
+  ***** glfw-3.1.1
+  ***** oglplus-0.60.0
+6. Run cmake, tick advanced options, and make sure paths to the libraries are correct.
+7. Build glew (see below).
+8. Build oglfw (see below).
+9. Open CMake and configure the directories:
+  * Source Code: EntitySystems
+  * Binaries: EntitySystems/Build
+10. Configure and select Microsoft Visual Studio
+11. Check BUILD_TEST_GAME.
+12. Generate
+13. Go to the binaries folder and open the generated Solution file.
+14. Build.
+
+##### Building glew
+
+###### Windows
+
+1. Navigate to glew-x.x.x\build\vc12 and open glew.sln
+2. Build glew_shared
+3. Don't forget to move glew32.dll into the same folder as TestGame.exe.
+
+###### Linux
+
+1. cd glew-x.x.x
+2. make && sudo make install
+
+##### Building glfw
+
+###### Windows
+
+1. Open CMake and configure the directories:
+  * Source Code: EntitySystems/Lib/glfw-x.x.x
+  * Binaries: EntitySystems/Lib/glfw-x.x.x/Build
+2. Configure and select Microsoft Visual Studio
+3. Generate
+4. Go to the binaries folder and open the generated Solution file.
+5. Build.
+
+###### Linux
+
+1. TODO
