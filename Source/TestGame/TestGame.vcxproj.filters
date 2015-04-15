@@ -16,6 +16,12 @@
     <Filter Include="Header Files\Bullets">
       <UniqueIdentifier>{05e9317d-aaf8-463c-a606-9c867360b770}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Header Files\Rendering">
+      <UniqueIdentifier>{c1b3a73d-b881-4f4f-8ed8-0438791d3ee6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="Header Files\Rendering\Shaders">
+      <UniqueIdentifier>{b410b76c-c44a-4192-9fa5-cef67c4952b9}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="src\TestGame.cpp">
@@ -25,6 +31,9 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="src\Timer.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="src\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -46,6 +55,24 @@
     </ClInclude>
     <ClInclude Include="include\Game\SimpleBulletSystem.h">
       <Filter>Header Files\Bullets</Filter>
+    </ClInclude>
+    <ClInclude Include="include\game\Scene.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\game\RenderingSystem.h">
+      <Filter>Header Files\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="include\game\RenderingLayer.h">
+      <Filter>Header Files\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="include\game\InstancedSprite.h">
+      <Filter>Header Files\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="include\game\SpriteDrawCommand.h">
+      <Filter>Header Files\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="include\game\Sprite.h">
+      <Filter>Header Files\Rendering</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
