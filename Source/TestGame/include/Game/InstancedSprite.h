@@ -35,7 +35,6 @@
 #include <ES/disarray.h>
 #include <Game/Vector2.h>
 #include <algorithm>
-#include <tuple>
 #include <limits>
 
 namespace game
@@ -50,7 +49,7 @@ namespace game
 
 		void Sort()
 		{
-			std::uint16_t i = _elementCount;
+			auto i = _elementCount;
 			auto lowest = _positionArray.begin();
 			while (i > 0)
 			{

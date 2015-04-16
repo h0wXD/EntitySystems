@@ -35,7 +35,6 @@
 #include <Game/Timer.h>
 #include <Game/RenderingSystem.h>
 
-#include <cstddef>
 #include <thread>
 #include <condition_variable>
 #include <bitset>
@@ -101,22 +100,22 @@ namespace game
 	*/
 	bool Scene::IsStopped() const
 	{
-		return _flags.at(_IS_STOPPED);
+		return _flags.test(_IS_STOPPED);
 	}
 
 	bool Scene::ShouldStop() const
 	{
-		return _flags.at(_SHOULD_STOP);
+		return _flags.test(_SHOULD_STOP);
 	}
 
 	bool Scene::IsReadyToSync() const
 	{
-		return _flags.at(_IS_READY_TO_SYNC);
+		return _flags.test(_IS_READY_TO_SYNC);
 	}
 
 	bool Scene::IsReadyToResume() const
 	{
-		return _flags.at(_IS_READY_TO_RESUME);
+		return _flags.test(_IS_READY_TO_RESUME);
 	}
 
 	/*

@@ -52,15 +52,15 @@ namespace game
 	public:
 		RenderingLayer() :
 			_opaqueSpriteCount(0),
-			_transparentSpriteCount(0),
 			_opaqueSpriteArray(255),
+			_transparentSpriteCount(0),
 			_transparentSpriteArray(255) { }
 
 	private:
 		void Sort()
 		{
 			auto transparent = _transparentSpriteArray.data();
-			std::uint16_t count = _transparentSpriteCount;
+			auto count = _transparentSpriteCount;
 
 			while (count > 0)
 			{
@@ -72,9 +72,9 @@ namespace game
 
 		void Render()
 		{
-			std::uint16_t opaqueCount = _opaqueSpriteCount;
+			auto opaqueCount = _opaqueSpriteCount;
 			auto opaque = _opaqueSpriteArray.data();
-			std::uint16_t transparentCount = _transparentSpriteCount;
+			auto transparentCount = _transparentSpriteCount;
 			auto transparent = _transparentSpriteArray.data();
 
 			while (opaqueCount > 0)

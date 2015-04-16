@@ -33,7 +33,6 @@
 #define GAME_TIMER_H
 
 #include <bitset>
-#include <functional>
 #include <thread>
 
 namespace game
@@ -51,11 +50,11 @@ namespace game
 		void _threadMethod();
 		std::thread _thread;
 
-		inline bool ShouldStop();
-		inline bool IsStopped();
+		inline bool ShouldStop() const;
+		inline bool IsStopped() const;
 
 	public:
-		Timer(int tickRate) : _tickRate(tickRate) 
+		explicit Timer(int tickRate) : _tickRate(tickRate) 
 		{ 
 			_stopSet.set(_IS_STOPPED);
 		}
@@ -64,14 +63,14 @@ namespace game
 		~Timer();
 	};
 
-	bool Timer::ShouldStop()
+	bool Timer::ShouldStop() const
 	{
-		return _stopSet.at(_SHOULD_STOP);
+		return _stopSet.test(_SHOULD_STOP);
 	}
 
-	bool Timer::IsStopped()
+	bool Timer::IsStopped() const
 	{
-		return _stopSet.at(_IS_STOPPED);
+		return _stopSet.test(_IS_STOPPED);
 	}
 
 }

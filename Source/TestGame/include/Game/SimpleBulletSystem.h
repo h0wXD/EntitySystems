@@ -36,7 +36,6 @@
 #include <ES/disarray.h>
 #include <ES/for_each_where.h>
 
-#include <Game/ILogic.h>
 #include <Game/Vector2.h>
 #include <Game/SimpleMovementManager.h>
 
@@ -71,14 +70,14 @@ namespace game
 		es::disarray<Vector2f> _directionArray;
 
 	public:
-		SimpleBulletSystem(std::uint16_t size) : 
+		explicit SimpleBulletSystem(std::uint16_t size) : 
+			System(), 
 			_positionArray(size), 
-			_directionArray(size), 
-			System() { }
+			_directionArray(size) { }
 
 		es::System::Handle Add()
 		{
-			Handle handle = CreateHandle();
+			auto handle = CreateHandle();
 			IncreaseElementCount();
 			return handle;
 		}
@@ -90,12 +89,12 @@ namespace game
 
 			auto OutOfBounds = [](const Vector2f &pos)
 			{
-				float x = ::abs(pos.x);
-				float y = ::abs(pos.y);
+				auto x = ::abs(pos.x);
+				auto y = ::abs(pos.y);
 
 				return x > 2 || y > 2;
 			};
-			int count = 0;
+			auto count = 0;
 			auto AddToRemove = [&count, &toRemove](int i)
 			{
 				toRemove[count] = i;

@@ -34,8 +34,6 @@
 
 #include <Game/Vector2.h>
 #include <ES/disarray.h>
-#include <ES/System.h>
-#include <cstddef>
 
 namespace game
 {

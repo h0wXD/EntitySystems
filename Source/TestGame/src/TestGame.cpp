@@ -30,28 +30,31 @@
 
 
 #include <ES/System.h>
-#include <Game/DumbEnemySystem.h>
-#include <Game/Timer.h>
 #include <Game/Scene.h>
 #include <Game/Sprite.h>
-
-#include <iostream>
-#include <typeinfo>
-#include <chrono>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
 #include <oglplus/gl.hpp>
-#include <oglplus/all.hpp>
 
-int main(int argc, char *argv[])
+int main(int argc, char *argv[]);
+
+#ifdef _WIN32
+#include <windows.h>
+int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine, int iCmdShow)
+{
+	return main(0, nullptr);
+}
+#endif
+
+int main(int argc, char ** argv)
 {
 	using namespace oglplus;
 
 	//glewExperimental = GL_TRUE;
 	glfwInit();
-	
-	GLFWwindow *window = glfwCreateWindow(400, 400, "Test", nullptr, nullptr);
+
+	auto window = glfwCreateWindow(400, 400, "Test", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
 	glewInit();
 	//glGetError();
