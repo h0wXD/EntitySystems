@@ -80,5 +80,8 @@
     <ClInclude Include="include\Game\Basic2DShader.h">
       <Filter>Header Files\Rendering\Shaders</Filter>
     </ClInclude>
+    <ClInclude Include="include\Game\Lit2D.h">
+      <Filter>Header Files\Rendering\Shaders</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>

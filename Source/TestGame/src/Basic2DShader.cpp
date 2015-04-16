@@ -10,6 +10,8 @@ namespace game
 			"#version 330 core\n"
 
 			"layout (location = 0) in vec2 aPosition;"
+			"layout (location = 1) in vec2 aOffset;"
+			"layout (location = 2) in float aDepth;"
 
 			"out vec2 _position;"
 			"uniform mat4 uProjection;"
@@ -42,7 +44,7 @@ namespace game
 			"{"
 			"   vec2  position;"
 			"   vec3  color;"
-			"   float decay;"
+			"   float intensity;"
 			"};"
 
 			"struct Ambient"
@@ -66,7 +68,7 @@ namespace game
 			"   {"
 			"       vec2 translated = uLights[i].position - _position;"
 			"       float distance = sqrt(translated.x * translated.x + translated.y * translated.y);"
-			"       light += outColor.xyz * uLights[i].color / distance * uLights[i].decay;"
+			"       light += outColor.xyz * uLights[i].color / distance * uLights[i].intensity;"
 			"   }"
 			"   _color = vec4(ambient + light, 1.0);"
 			"}";
@@ -102,7 +104,7 @@ namespace game
 			auto index = std::string("uLights[") + std::to_string(i) + std::string("]");
 			_light.Position[i] = glGetUniformLocation(_program, std::string(index + ".position").c_str());
 			_light.Color[i] = glGetUniformLocation(_program, std::string(index + ".color").c_str());
-			_light.Decay[i] = glGetUniformLocation(_program, std::string(index + ".decay").c_str());
+			_light.Intensity[i] = glGetUniformLocation(_program, std::string(index + ".intensity").c_str());
 		}
 
 		_ambient.Color = glGetUniformLocation(_program, "uAmbient.color");

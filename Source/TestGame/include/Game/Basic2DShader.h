@@ -20,7 +20,7 @@ namespace game
 		{
 			GLint Position[16];
 			GLint Color[16];
-			GLint Decay[16];
+			GLint Intensity[16];
 		} _light;
 
 		struct
@@ -59,9 +59,9 @@ namespace game
 			glUniform3f(_light.Color[i], r, g, b);
 		}
 
-		void SetLightDecay(int i, float decay) const
+		void SetLightIntensity(int i, float decay) const
 		{
-			glUniform1f(_light.Decay[i], decay);
+			glUniform1f(_light.Intensity[i], decay);
 		}
 
 		void SetAmbientColor(float r, float g, float b) const

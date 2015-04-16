@@ -152,6 +152,7 @@
     <ClInclude Include="include\Game\Basic2DShader.h" />
     <ClInclude Include="include\Game\DumbEnemySystem.h" />
     <ClInclude Include="include\game\InstancedSprite.h" />
+    <ClInclude Include="include\Game\Lit2D.h" />
     <ClInclude Include="include\game\RenderingLayer.h" />
     <ClInclude Include="include\game\RenderingSystem.h" />
     <ClInclude Include="include\Game\ILogic.h" />

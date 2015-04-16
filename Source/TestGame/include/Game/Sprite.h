@@ -45,13 +45,17 @@ namespace game
 	class Sprite
 	{
 		GLuint _vao;
+		GLuint _instanceOffsetVbo;
+		GLuint _instanceDepthVbo;
 	public:
 		Sprite()
 		{
 			GLuint vbo;
 			glGenBuffers(1, &vbo);
 			glGenVertexArrays(1, &_vao);
-			
+			glGenBuffers(1, &_instanceOffsetVbo);
+			glGenBuffers(1, &_instanceDepthVbo);
+
 			float vertices[] =
 			{ -0.5f,  0.5f, //0,
 			   0.5f, -0.5f, //0,
@@ -61,12 +65,17 @@ namespace game
 			   0.5f,  0.5f, //0,
 			   0.5f, -0.5f, //0,
 			};
+
 			glBindVertexArray(_vao);
 			{
 				glBindBuffer(GL_ARRAY_BUFFER, vbo);
 				glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 				glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
 				glEnableVertexAttribArray(0);
+				glEnableVertexAttribArray(1);
+				glVertexAttribDivisor(1, 1);
+				glEnableVertexAttribArray(2);
+				glVertexAttribDivisor(2, 1);
 			}
 			
 		}
@@ -78,16 +87,19 @@ namespace game
 
 			auto &shader = Basic2DShader::Get();
 			
-			shader.SetLightCount(2);
+			shader.SetLightCount(3);
 			shader.SetLightColor(0, 1.0f, 0, 0);
-			shader.SetLightDecay(0, 2.0f);
+			shader.SetLightIntensity(0, 2.0f);
 			shader.SetLightPosition(0, Vector2f(0, 0));
 			shader.SetLightColor(1, 0, 0.2f, 0);
 			shader.SetLightPosition(1, Vector2f(-1, 0));
-			shader.SetLightDecay(1, 3.0f);
+			shader.SetLightIntensity(1, 3.0f);
+			shader.SetLightColor(2, 0, 0, ::cos(time) + 1.f);
+			shader.SetLightIntensity(2, .18f);
+			shader.SetLightPosition(2, Vector2f(::cos(time), ::sin(time)));
 
 			shader.SetAmbientColor(1.0f, 1.0f, 1.0f);
-			shader.SetAmbientIntensity(0.8f);
+			shader.SetAmbientIntensity(::cos(time * 0.1f));
 			shader.Use();
 
 			glBindVertexArray(_vao);

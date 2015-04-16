@@ -1,4 +1,4 @@
-﻿/********************************************************************************
+/********************************************************************************
  │ 
  │  ╔═════════════╗
  │  ║EntitySystems║
@@ -35,7 +35,7 @@
 namespace game
 {
 
-	Scene::Scene() : _timer(200), _renderingSystem(new RenderingSystem())
+	Scene::Scene() : _timer(144), _renderingSystem(new RenderingSystem())
 	{
 		_flags.set(_IS_STOPPED);
 	}
