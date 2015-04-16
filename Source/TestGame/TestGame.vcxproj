@@ -142,12 +142,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\Basic2DShader.cpp" />
     <ClCompile Include="src\ILogic.cpp" />
     <ClCompile Include="src\Scene.cpp" />
     <ClCompile Include="src\TestGame.cpp" />
     <ClCompile Include="src\Timer.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="include\Game\Basic2DShader.h" />
     <ClInclude Include="include\Game\DumbEnemySystem.h" />
     <ClInclude Include="include\game\InstancedSprite.h" />
     <ClInclude Include="include\game\RenderingLayer.h" />

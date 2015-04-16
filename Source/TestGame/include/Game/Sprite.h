@@ -1,4 +1,4 @@
-﻿/********************************************************************************
+/********************************************************************************
  │ 
  │  ╔═════════════╗
  │  ║EntitySystems║
@@ -32,9 +32,12 @@
 #ifndef GAME_SPRITE_H
 #define GAME_SPRITE_H
 
+#include <Game/Basic2DShader.h>
+
 #include <GL/glew.h>
 #include <GL/GL.h>
 #include <iostream>
+#include <cmath>
 
 namespace game
 {
@@ -42,7 +45,6 @@ namespace game
 	class Sprite
 	{
 		GLuint _vao;
-		GLuint _program; // Temporary
 	public:
 		Sprite()
 		{
@@ -66,69 +68,29 @@ namespace game
 				glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
 				glEnableVertexAttribArray(0);
 			}
-			glBindVertexArray(0);
-
-			GLuint vertexShader;
-			const char *vertexSource =
-				"#version 330 core\n"
-				"layout (location = 0) in vec2 position;"
-				"uniform vec2 offset;"
-
-				"void main(void)"
-				"{"
-				"   gl_Position = vec4(position + offset, 0.0f, 1.0f);"
-				"}";
-
-			vertexShader = glCreateShader(GL_VERTEX_SHADER);
-			glShaderSource(vertexShader, 1, &vertexSource, nullptr);
-			glCompileShader(vertexShader);
-
-			GLuint fragmentShader;
-			const char *fragmentSource =
-				"#version 330 core\n"
-				"out vec4 color;"
-
-				"void main(void)"
-				"{"
-				"   color = vec4(1.0f, 0.5f, 0.5f, 1.0f);"
-				"}";
-
-			fragmentShader = glCreateShader(GL_FRAGMENT_SHADER);
-			glShaderSource(fragmentShader, 1, &fragmentSource, nullptr);
-			glCompileShader(fragmentShader);
 			
-			GLint success;
-			glGetShaderiv(vertexShader, GL_COMPILE_STATUS, &success);
-			if (!success)
-			{
-				GLchar log[512];
-				glGetShaderInfoLog(vertexShader, 512, nullptr, log);
-				std::cerr << log << std::endl;
-			}
-
-			glGetShaderiv(fragmentShader, GL_COMPILE_STATUS, &success);
-			if (!success)
-			{
-				GLchar log[512];
-				glGetShaderInfoLog(fragmentShader, 512, nullptr, log);
-				std::cerr << log << std::endl;
-			}
-
-			_program = glCreateProgram();
-			glAttachShader(_program, vertexShader);
-			glAttachShader(_program, fragmentShader);
-			glLinkProgram(_program);
-
-			glDeleteShader(vertexShader);
-			glDeleteShader(fragmentShader);
 		}
 
 		void Test()
 		{
-			static float x;
-			x += 0.02f;
-			glUseProgram(_program);
-			glUniform2f(glGetUniformLocation(_program, "offset"), x, 0);
+			static float time;
+			time += 0.01f;
+
+			auto &shader = Basic2DShader::Get();
+			
+			shader.SetLightCount(2);
+			shader.SetLightColor(0, 1.0f, 0, 0);
+			shader.SetLightDecay(0, 2.0f);
+			shader.SetLightPosition(0, Vector2f(0, 0));
+			shader.SetLightColor(1, 0, 0.2f, 0);
+			shader.SetLightPosition(1, Vector2f(-1, 0));
+			shader.SetLightDecay(1, 3.0f);
+
+			shader.SetAmbientColor(1.0f, 1.0f, 1.0f);
+			shader.SetAmbientIntensity(0.8f);
+			shader.SetOffset(Vector2f(::sin(time), ::cos(time)), 0);
+			shader.Use();
+
 			glBindVertexArray(_vao);
 			
 			glDrawArrays(GL_TRIANGLES, 0, 6);

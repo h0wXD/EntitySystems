@@ -36,6 +36,9 @@
     <ClCompile Include="src\Scene.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="src\Basic2DShader.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="include\Game\DumbEnemySystem.h">
@@ -73,6 +76,9 @@
     </ClInclude>
     <ClInclude Include="include\game\Sprite.h">
       <Filter>Header Files\Rendering</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Game\Basic2DShader.h">
+      <Filter>Header Files\Rendering\Shaders</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>
