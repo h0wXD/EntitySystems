@@ -88,11 +88,17 @@ namespace game
 
 			shader.SetAmbientColor(1.0f, 1.0f, 1.0f);
 			shader.SetAmbientIntensity(0.8f);
-			shader.SetOffset(Vector2f(::sin(time), ::cos(time)), 0);
 			shader.Use();
 
 			glBindVertexArray(_vao);
 			
+			shader.SetOffset(Vector2f(::sin(time), ::sin(time)), 0);
+			glDrawArrays(GL_TRIANGLES, 0, 6);
+			shader.SetOffset(Vector2f(::sin(-time), ::sin(time)), 0);
+			glDrawArrays(GL_TRIANGLES, 0, 6);
+			shader.SetOffset(Vector2f(-::sin(time), -::sin(time)), 0);
+			glDrawArrays(GL_TRIANGLES, 0, 6);
+			shader.SetOffset(Vector2f(-::sin(-time), -::sin(time)), 0);
 			glDrawArrays(GL_TRIANGLES, 0, 6);
 		}
 
