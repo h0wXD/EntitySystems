@@ -45,30 +45,30 @@ namespace game
 	class Sprite
 	{
 		GLuint _vao;
+		GLuint _vbo;
 		GLuint _instanceOffsetVbo;
 		GLuint _instanceDepthVbo;
 	public:
 		Sprite()
 		{
-			GLuint vbo;
-			glGenBuffers(1, &vbo);
+			glGenBuffers(1, &_vbo);
 			glGenVertexArrays(1, &_vao);
 			glGenBuffers(1, &_instanceOffsetVbo);
 			glGenBuffers(1, &_instanceDepthVbo);
 
 			float vertices[] =
-			{ -0.5f,  0.5f, //0,
-			   0.5f, -0.5f, //0,
-			  -0.5f, -0.5,  //0,
+			{ -1.0f,  1.0f, //0,
+			   1.0f, -1.0f, //0,
+			  -1.0f, -1.0f,  //0,
 
-			  -0.5f,  0.5f, //0,
-			   0.5f,  0.5f, //0,
-			   0.5f, -0.5f, //0,
+			  -1.0f,  1.0f, //0,
+			   1.0f,  1.0f, //0,
+			   1.0f, -1.0f, //0,
 			};
 
+			glBindBuffer(GL_ARRAY_BUFFER, _vbo);
 			glBindVertexArray(_vao);
 			{
-				glBindBuffer(GL_ARRAY_BUFFER, vbo);
 				glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 				glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 0, nullptr);
 				glEnableVertexAttribArray(0);
@@ -77,7 +77,7 @@ namespace game
 				glEnableVertexAttribArray(2);
 				glVertexAttribDivisor(2, 1);
 			}
-			
+			glBindVertexArray(0);
 		}
 
 		void Test()
@@ -86,7 +86,8 @@ namespace game
 			time += 0.01f;
 
 			auto &shader = Basic2DShader::Get();
-			
+			shader.Use();
+
 			shader.SetLightCount(3);
 			shader.SetLightColor(0, 1.0f, 0, 0);
 			shader.SetLightIntensity(0, 2.0f);
@@ -100,10 +101,17 @@ namespace game
 
 			shader.SetAmbientColor(1.0f, 1.0f, 1.0f);
 			shader.SetAmbientIntensity(::cos(time * 0.1f));
-			shader.Use();
 
 			glBindVertexArray(_vao);
+			glBindBuffer(GL_ARRAY_BUFFER, _vbo);
+
+			shader.SetSize(1.0f);
+			shader.SetOffset(Vector2f{ 0, 0 }, 0);
+			shader.SetColor(1, 1, 1);
+			glDrawArrays(GL_TRIANGLES, 0, 6);
 			
+			shader.SetSize(0.1f);
+			shader.SetColor(0.2f, 1.0f, 0.1f);
 			shader.SetOffset(Vector2f(::sin(time), ::sin(time)), 0);
 			glDrawArrays(GL_TRIANGLES, 0, 6);
 			shader.SetOffset(Vector2f(::sin(-time), ::sin(time)), 0);

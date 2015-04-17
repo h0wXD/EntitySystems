@@ -32,6 +32,7 @@
 #include <ES/System.h>
 #include <Game/Scene.h>
 #include <Game/Sprite.h>
+#include <Game/InstancingTest.h>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -54,7 +55,11 @@ int main(int argc, char ** argv)
 	//glewExperimental = GL_TRUE;
 	glfwInit();
 
-	auto window = glfwCreateWindow(400, 400, "Test", nullptr, nullptr);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); 
+	glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+	auto window = glfwCreateWindow(800, 400, "Test", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
 	glewInit();
 	//glGetError();
@@ -63,13 +68,18 @@ int main(int argc, char ** argv)
 	scene.StartLogicThread();
 
 	game::Sprite sprite;
+
+	game::InstancingTest test;
 	while (!glfwWindowShouldClose(window))
 	{
 		
 		scene.LockToSyncThreads();
 		scene.Render();
 		
+		glViewport(0, 0, 400, 400);
 		sprite.Test();
+		glViewport(400, 0, 400, 400);
+		test.Test();
 		glfwSwapBuffers(window);
 		glClear(GL_COLOR_BUFFER_BIT);
 		glfwWaitEvents();

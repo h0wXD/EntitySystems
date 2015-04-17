@@ -15,6 +15,8 @@ namespace game
 		GLint _offset;
 		GLint _lightCount;
 		GLint _projection;
+		GLint _color;
+		GLint _size;
 
 		struct
 		{
@@ -72,6 +74,16 @@ namespace game
 		void SetAmbientIntensity(float intensity) const
 		{
 			glUniform1f(_ambient.Intensity, intensity);
+		}
+
+		void SetColor(float r, float g, float b)
+		{
+			glUniform3f(_color, r, g, b);
+		}
+
+		void SetSize(float f)
+		{
+			glUniform1f(_size, f);
 		}
 	};
 }

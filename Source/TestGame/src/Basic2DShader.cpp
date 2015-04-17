@@ -14,14 +14,16 @@ namespace game
 			"layout (location = 2) in float aDepth;"
 
 			"out vec2 _position;"
+			"out vec3 _objectColor;"
 			"uniform mat4 uProjection;"
 			"uniform vec3 uOffset;"
+			"uniform float uSize;"
 
 			"void main()"
 			"{"
 			"   /*gl_Position = uProjection * vec3(aPosition + uOffset.xy, uOffset.z);*/"
-			"   gl_Position = vec4(vec3(aPosition + uOffset.xy, uOffset.z), 1);"
-			"   _position = aPosition + uOffset.xy;"
+			"   gl_Position = vec4(aPosition * uSize + uOffset.xy, uOffset.z, 1);"
+			"   _position = aPosition * uSize + uOffset.xy;"
 			"}";
 
 		GLuint vertexShader = glCreateShader(GL_VERTEX_SHADER);
@@ -55,20 +57,21 @@ namespace game
 
 			"out vec4 _color;"
 			"in vec2 _position;"
+
+			"uniform vec3 uColor;"
 			"uniform int uLightCount;"
 			"uniform Light uLights[MAX_LIGHTS];"
 			"uniform Ambient uAmbient;"
 
 			"void main()"
 			"{"
-			"   vec4 outColor = vec4(0.2f, 0.5f, 0.2f, 1.0f);"
-			"   vec3 ambient = uAmbient.color * uAmbient.intensity * outColor.xyz;"
+			"   vec3 ambient = uAmbient.color * uAmbient.intensity * uColor;"
 			"   vec3 light = vec3(0,0,0);"
 			"   for (int i = 0; i < uLightCount; ++i)"
 			"   {"
 			"       vec2 translated = uLights[i].position - _position;"
 			"       float distance = sqrt(translated.x * translated.x + translated.y * translated.y);"
-			"       light += outColor.xyz * uLights[i].color / distance * uLights[i].intensity;"
+			"       light += uColor * uLights[i].color / distance * uLights[i].intensity;"
 			"   }"
 			"   _color = vec4(ambient + light, 1.0);"
 			"}";
@@ -98,6 +101,8 @@ namespace game
 		_offset = glGetUniformLocation(_program, "uOffset");
 		_lightCount = glGetUniformLocation(_program, "uLightCount");
 		_projection = glGetUniformLocation(_program, "uProjection");
+		_color = glGetUniformLocation(_program, "uColor");
+		_size = glGetUniformLocation(_program, "uSize");
 
 		for (int i = 0; i < 16; ++i)
 		{
