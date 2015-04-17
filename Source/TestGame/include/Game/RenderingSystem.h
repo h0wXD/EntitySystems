@@ -33,7 +33,6 @@
 #define GAME_RENDERING_SYSTEM_H
 
 #include <Game/SpriteDrawCommand.h>
-#include <Game/RenderingLayer.h>
 #include <ES/System.h>
 
 #include <array>
@@ -44,57 +43,19 @@ namespace game
 	
 	class RenderingSystem : es::System
 	{
-	public:
-		enum
-		{
-			BACKGROUND,
-			MIDDLE,
-			FOREGROUND,
-			LAYER_COUNT
-		};
-	private:
-		std::array<RenderingLayer, LAYER_COUNT> _renderingLayers;
 		es::disarray<SpriteDrawCommand> _commands;
 		std::uint16_t _commandCount;
 
 	public:
 		RenderingSystem()
 		{
-			for (auto &layer : _renderingLayers)
-			{
-				layer._system = this;
-			}
 			_commandCount = 0;
 			_commands.Allocate(255);
 		}
 		Handle LoadTexture(const std::string &path);
 
-		void Render() 
-		{
-			for (auto &layer : _renderingLayers)
-			{
-				layer.Sort();
-			}
-
-			for (auto &layer : _renderingLayers)
-			{
-				layer.Render();
-			}
-		}
-		void HandleCommands()
-		{
-			for (auto layer : _renderingLayers)
-			{
-				layer._opaqueSpriteCount = 0;
-				layer._transparentSpriteCount = 0;
-			}
-
-			SpriteDrawCommand *command = nullptr;
-			for (std::uint16_t i = 0; i < _commandCount; ++i, ++command)
-			{
-				
-			}
-		}
+		void Render() {}
+		void HandleCommands();
 
 		~RenderingSystem() { }
 	};
