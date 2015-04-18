@@ -16,14 +16,15 @@ namespace game
 
 		float *_translations;
 
+		static const int INSTANCE_COUNT = 9000;
 	public:
 		InstancingTest()
 		{
 			std::random_device rd;
 			std::mt19937 gen(rd());
 			std::uniform_real_distribution<float> distribution{ -1, 1 };
-			_translations = new float[400];
-			for (int i = 0; i < 400; ++i)
+			_translations = new float[INSTANCE_COUNT * 2];
+			for (int i = 0; i < INSTANCE_COUNT * 2; ++i)
 			{
 				_translations[i] = distribution(gen);
 			}
@@ -109,7 +110,7 @@ namespace game
 				glEnableVertexAttribArray(1);
 				glVertexAttribDivisor(1, 1);
 
-				glBufferData(GL_ARRAY_BUFFER, 400 * 4, nullptr, GL_STREAM_DRAW);
+				glBufferData(GL_ARRAY_BUFFER, INSTANCE_COUNT * 2 * 4, nullptr, GL_STREAM_DRAW);
 				glBindBuffer(GL_ARRAY_BUFFER, 0);
 			}
 			glBindVertexArray(0);
@@ -121,7 +122,7 @@ namespace game
 			static float time;
 			time += 0.02f;
 			float *pTranslations = _translations;
-			for (int i = 0; i < 200; ++i, pTranslations += 2)
+			for (int i = 0; i < INSTANCE_COUNT; ++i, pTranslations += 2)
 			{
 				*pTranslations += ::cos(time) * 0.01f;
 				*(pTranslations + 1) += ::sin(time * *pTranslations) * 0.01f;
@@ -129,10 +130,10 @@ namespace game
 			glBindVertexArray(_vao);
 			
 			glBindBuffer(GL_ARRAY_BUFFER, _instanceVbo);
-			glBufferSubData(GL_ARRAY_BUFFER, 0, 400 * sizeof(float), _translations);
+			glBufferSubData(GL_ARRAY_BUFFER, 0, INSTANCE_COUNT * 2 * sizeof(float), _translations);
 			glUseProgram(_program);
 
-			glDrawArraysInstanced(GL_TRIANGLES, 0, 3, 200);
+			glDrawArraysInstanced(GL_TRIANGLES, 0, 3, INSTANCE_COUNT);
 			
 		}
 	};

@@ -42,7 +42,7 @@ namespace game
 		auto nextEventTime = high_resolution_clock::now() + microseconds(1000000 / _tickRate);
 		while (!ShouldStop())
 		{
-			std::this_thread::sleep_for(microseconds(2000));
+			std::this_thread::sleep_for(microseconds(1000000 / (_tickRate * 2)));
 			if (high_resolution_clock::now() > nextEventTime)
 			{
 				nextEventTime += microseconds(1000000 / _tickRate);
