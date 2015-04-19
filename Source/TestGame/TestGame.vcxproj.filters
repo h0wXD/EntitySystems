@@ -65,12 +65,6 @@
     <ClInclude Include="include\game\RenderingSystem.h">
       <Filter>Header Files\Rendering</Filter>
     </ClInclude>
-    <ClInclude Include="include\game\SpriteDrawCommand.h">
-      <Filter>Header Files\Rendering</Filter>
-    </ClInclude>
-    <ClInclude Include="include\game\Sprite.h">
-      <Filter>Header Files\Rendering</Filter>
-    </ClInclude>
     <ClInclude Include="include\Game\Basic2DShader.h">
       <Filter>Header Files\Rendering\Shaders</Filter>
     </ClInclude>
@@ -78,6 +72,12 @@
       <Filter>Header Files\Rendering\Shaders</Filter>
     </ClInclude>
     <ClInclude Include="include\Game\InstancingTest.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Game\KeyCommand.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="include\Game\InputSystem.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

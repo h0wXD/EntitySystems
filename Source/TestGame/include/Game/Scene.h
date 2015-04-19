@@ -34,6 +34,7 @@
 
 #include <Game/Timer.h>
 #include <Game/RenderingSystem.h>
+#include "InputSystem.h"
 
 #include <thread>
 #include <condition_variable>
@@ -79,6 +80,7 @@ namespace game
 		inline void SetReadyToResume(bool v = true);
 
 		std::unique_ptr<RenderingSystem> _renderingSystem;
+		std::unique_ptr<InputSystem> _inputSystem;
 
 	public:
 		Scene();
@@ -86,9 +88,13 @@ namespace game
 
 		void StartLogicThread();
 		void StopLogicThread();
-		void LockToSyncThreads();
+		void LockAndSyncThreads();
+		void NotifyThreads();
 
 		void Render();
+
+		inline RenderingSystem *GetRenderingSystem();
+		inline InputSystem *GetInputSystem();
 	};
 
 	/*******************************
@@ -116,6 +122,16 @@ namespace game
 	bool Scene::IsReadyToResume() const
 	{
 		return _flags.test(_IS_READY_TO_RESUME);
+	}
+
+	RenderingSystem *Scene::GetRenderingSystem()
+	{
+		return _renderingSystem.get();
+	}
+
+	InputSystem *Scene::GetInputSystem()
+	{
+		return _inputSystem.get();
 	}
 
 	/*

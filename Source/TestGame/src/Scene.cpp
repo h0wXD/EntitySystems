@@ -101,14 +101,20 @@ namespace game
 		SetStopped();
 	}
 
-	void Scene::LockToSyncThreads()
+	void Scene::LockAndSyncThreads()
 	{
 		{
 			std::unique_lock<std::mutex> lock(_mutex);
 			_synchronizeThreads.wait(lock, [this] { return IsReadyToSync(); });
-			//_renderingSystem->HandleCommands();
+
+			_renderingSystem->HandleCommands();
 			SetReadyToResume();
 		}
+	}
+
+	void Scene::NotifyThreads()
+	{
 		_synchronizeThreads.notify_one();
 	}
+
 }

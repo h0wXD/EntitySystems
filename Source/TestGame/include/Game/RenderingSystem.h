@@ -32,7 +32,7 @@
 #ifndef GAME_RENDERING_SYSTEM_H
 #define GAME_RENDERING_SYSTEM_H
 
-#include <Game/SpriteDrawCommand.h>
+
 #include <ES/System.h>
 
 #include <array>
@@ -43,14 +43,14 @@ namespace game
 	
 	class RenderingSystem : es::System
 	{
-		es::disarray<SpriteDrawCommand> _commands;
+		//es::disarray<SpriteDrawCommand> _commands;
 		std::uint16_t _commandCount;
 
 	public:
 		RenderingSystem()
 		{
 			_commandCount = 0;
-			_commands.Allocate(255);
+			//_commands.Allocate(255);
 		}
 		Handle LoadTexture(const std::string &path);
 

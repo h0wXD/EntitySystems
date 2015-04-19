@@ -33,6 +33,7 @@
 #include <Game/Scene.h>
 #include <Game/Sprite.h>
 #include <Game/InstancingTest.h>
+#include <Game/InputSystem.h>
 
 #include <GL/glew.h>
 #include <GLFW/glfw3.h>
@@ -41,20 +42,22 @@
 int main(int argc, char *argv[]);
 
 #ifdef _WIN32
-#include <windows.h>
-int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine, int iCmdShow)
-{
-	return main(0, nullptr);
-}
+#	include <windows.h>
+	int __stdcall WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance, LPSTR szCmdLine, int iCmdShow)
+	{
+		return main(0, nullptr);
+	}
 #endif
+
+game::InputSystem *inputSystem;
+
+void HandleKeyInput(GLFWwindow *window, int key, int scancode, int action, int modifiers);
 
 int main(int argc, char ** argv)
 {
 	using namespace oglplus;
 
-	//glewExperimental = GL_TRUE;
 	glfwInit();
-
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
 	glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
 	glfwWindowHint(GLFW_OPENGL_FORWARD_COMPAT, GL_TRUE); 
@@ -62,18 +65,20 @@ int main(int argc, char ** argv)
 	auto window = glfwCreateWindow(800, 400, "Test", nullptr, nullptr);
 	glfwMakeContextCurrent(window);
 	glewInit();
-	//glGetError();
 	
+	glfwSetKeyCallback(window, &HandleKeyInput);
+
 	game::Scene scene;
+	inputSystem = scene.GetInputSystem();
 	scene.StartLogicThread();
 
 	game::Sprite sprite;
-
 	game::InstancingTest test;
 	while (!glfwWindowShouldClose(window))
 	{
 		
-		scene.LockToSyncThreads();
+		scene.LockAndSyncThreads();
+		scene.NotifyThreads();
 		scene.Render();
 		
 		glViewport(0, 0, 400, 400);
@@ -89,3 +94,18 @@ int main(int argc, char ** argv)
 	return 0;
 }
 
+void HandleKeyInput(GLFWwindow *window, int key, int scancode, int action, int modifiers)
+{
+	switch (action)
+	{
+	case GLFW_PRESS:
+		inputSystem->AddPressed(game::KeyCommand(window, key, scancode, modifiers));
+		break;
+	case GLFW_RELEASE:
+		inputSystem->AddReleased(game::KeyCommand(window, key, scancode, modifiers));
+		break;
+	case GLFW_REPEAT:
+		inputSystem->AddRepeated(game::KeyCommand(window, key, scancode, modifiers));
+		break;
+	}
+}
