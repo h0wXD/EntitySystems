@@ -1,3 +1,6 @@
+*Currently on hold.*  
+*A nearly complete rewrite is being written which may replace the code in this repository if successful.*
+
 # Experimental Entity (Component) System
 Written in C++.  
 **Very early in development stages**
